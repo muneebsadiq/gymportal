@@ -72,7 +72,7 @@
 
                         <!-- Amount -->
                         <div>
-                            <label for="amount" class="block text-sm font-medium text-gray-700">Amount (₹) *</label>
+                            <label for="amount" class="block text-sm font-medium text-gray-700">Amount (PKR) *</label>
                             <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="0" step="0.01" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                             @error('amount')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

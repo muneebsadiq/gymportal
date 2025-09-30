@@ -11,7 +11,7 @@
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Expenses</h2>
             </div>
             <div class="mt-4 flex md:mt-0 md:ml-4">
-                <a href="{{ route('expenses.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                <a href="{{ route('expenses.create') }}" class="btn-primary">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -34,7 +34,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dt class="text-sm font-medium text-gray-500 truncate">Total Expenses (Filtered Results)</dt>
-                        <dd class="text-lg font-medium text-gray-900">₹{{ number_format($totalAmount, 2) }}</dd>
+                        <dd class="text-lg font-medium text-gray-900">@currency($totalAmount)</dd>
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm font-medium text-gray-900">₹{{ number_format($expense->amount, 2) }}</div>
+                                        <div class="text-sm font-medium text-gray-900">@currency($expense->amount)</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">{{ $expense->expense_date->format('M d, Y') }}</div>
@@ -134,12 +134,12 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex items-center space-x-3">
-                                            <a href="{{ route('expenses.show', $expense) }}" class="text-indigo-600 hover:text-indigo-900">View</a>
-                                            <a href="{{ route('expenses.edit', $expense) }}" class="text-green-600 hover:text-green-900">Edit</a>
+                                            <a href="{{ route('expenses.show', $expense) }}" class="btn-secondary btn-sm">View</a>
+                                            <a href="{{ route('expenses.edit', $expense) }}" class="btn-secondary btn-sm">Edit</a>
                                             <form action="{{ route('expenses.destroy', $expense) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this expense? This action cannot be undone.');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                                <button type="submit" class="btn-danger btn-sm">Delete</button>
                                             </form>
                                         </div>
                                     </td>

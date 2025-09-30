@@ -83,17 +83,29 @@
                     </div>
 
                     <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Membership Plan</h3>
-                        <div class="grid grid-cols-1 gap-6">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Membership Plan & Coach</h3>
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div>
                                 <label for="membership_plan_id" class="block text-sm font-medium text-gray-700">Select Plan *</label>
                                 <select name="membership_plan_id" id="membership_plan_id" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                     <option value="">Select Plan</option>
                                     @foreach($plans as $plan)
-                                        <option value="{{ $plan->id }}" {{ old('membership_plan_id', $member->membership_plan_id ?? '') == $plan->id ? 'selected' : '' }}>{{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, ₹{{ $plan->fee }})</option>
+                                        <option value="{{ $plan->id }}" {{ old('membership_plan_id', $member->membership_plan_id ?? '') == $plan->id ? 'selected' : '' }}>{{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, @currency($plan->fee))</option>
                                     @endforeach
                                 </select>
                                 @error('membership_plan_id')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label for="coach_id" class="block text-sm font-medium text-gray-700">Assign Coach</label>
+                                <select name="coach_id" id="coach_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                    <option value="">No Coach</option>
+                                    @foreach(($coaches ?? []) as $coach)
+                                        <option value="{{ $coach->id }}" {{ old('coach_id', $member->coach_id) == $coach->id ? 'selected' : '' }}>{{ $coach->name }} {{ $coach->specialization ? '(' . $coach->specialization . ')' : '' }}</option>
+                                    @endforeach
+                                </select>
+                                @error('coach_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>

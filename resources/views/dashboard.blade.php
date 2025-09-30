@@ -98,7 +98,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">This Month Revenue</dt>
-                                <dd class="text-lg font-medium text-gray-900">${{ number_format($monthlyRevenue, 2) }}</dd>
+                                <dd class="text-lg font-medium text-gray-900">@currency($monthlyRevenue)</dd>
                             </dl>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                                         <div>
                                             <p class="text-sm text-gray-500">
                                                 <strong class="font-medium text-gray-900">{{ $payment->member->name }}</strong>
-                                                paid ${{ $payment->amount }} for {{ $payment->payment_type }}
+                                                paid @currency($payment->amount) for {{ $payment->payment_type }}
                                             </p>
                                         </div>
                                         <div class="text-right text-sm whitespace-nowrap text-gray-500">
@@ -180,7 +180,7 @@ const revenueChart = new Chart(revenueCtx, {
     data: {
         labels: revenueData.labels,
         datasets: [{
-            label: 'Revenue ($)',
+            label: 'Revenue (PKR)',
             data: revenueData.data,
             borderColor: 'rgb(79, 70, 229)',
             backgroundColor: 'rgba(79, 70, 229, 0.1)',

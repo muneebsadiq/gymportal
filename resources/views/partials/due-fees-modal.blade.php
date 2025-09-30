@@ -40,7 +40,7 @@
                 <td class="px-6 py-4 whitespace-nowrap">
                     @if($member->activeMembership())
                     <div class="text-sm text-gray-900">{{ $member->activeMembership()->plan_name }}</div>
-                    <div class="text-sm text-gray-500">₹{{ number_format($member->activeMembership()->monthly_fee, 2) }}/month</div>
+                    <div class="text-sm text-gray-500">@currency($member->activeMembership()->monthly_fee)/month</div>
                     @else
                     <span class="text-sm text-gray-500">No active plan</span>
                     @endif

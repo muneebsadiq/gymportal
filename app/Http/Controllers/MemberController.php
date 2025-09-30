@@ -6,6 +6,7 @@ use App\Models\Member;
 use App\Models\Membership;
 use App\Models\MembershipPlan;
 use App\Models\MemberMembershipPlan;
+use App\Models\Coach;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -62,6 +63,7 @@ class MemberController extends Controller
             'medical_conditions' => 'nullable|string',
             'profile_photo' => 'nullable|image|max:2048',
             'joined_date' => 'required|date',
+            'coach_id' => 'nullable|exists:coaches,id',
             
             // Membership details
             'plan_name' => 'required|string|max:255',
@@ -108,7 +110,8 @@ class MemberController extends Controller
     public function edit(Member $member ,MembershipPlan $plans)
     {
         $plans = \App\Models\MembershipPlan::all();
-        return view('members.edit', compact('member','plans'));
+        $coaches = Coach::orderBy('name')->get();
+        return view('members.edit', compact('member','plans','coaches'));
     }
 
     /**
@@ -130,6 +133,7 @@ class MemberController extends Controller
             'status' => 'required|in:active,inactive,suspended',
             // Membership plan selection from edit form
             'membership_plan_id' => 'nullable|exists:membership_plans,id',
+            'coach_id' => 'nullable|exists:coaches,id',
         ]);
 
         if ($request->hasFile('profile_photo')) {

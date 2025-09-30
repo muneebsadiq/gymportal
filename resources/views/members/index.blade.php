@@ -11,7 +11,7 @@
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Members</h2>
             </div>
             <div class="mt-4 flex md:mt-0 md:ml-4">
-                <a href="{{ route('members.create') }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <a href="{{ route('members.create') }}" class="btn-primary">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -95,13 +95,14 @@
                         </div>
                         <div class="flex items-center space-x-2">
                             @if($member->hasDueFees())
-                            <a href="{{ route('payments.create', ['member_id' => $member->id]) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                            <a href="{{ route('payments.create', ['member_id' => $member->id]) }}" class="btn-danger btn-sm">
                                 Collect Fee
                             </a>
                             @endif
-                            <a href="{{ route('members.show', $member) }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            <a href="{{ route('members.show', $member) }}" class="btn-secondary btn-sm">
                                 View
                             </a>
+                            <a href="{{ route('members.edit', $member) }}" class="btn-secondary btn-sm">Edit</a>
                         </div>
                     </div>
                 </li>

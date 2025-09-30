@@ -38,7 +38,7 @@
                     <p class="ml-16 truncate text-sm font-medium text-gray-500">Total Revenue</p>
                 </dt>
                 <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                    <p class="text-2xl font-semibold text-green-600">₹{{ number_format($revenue, 2) }}</p>
+                    <p class="text-2xl font-semibold text-green-600">@currency($revenue)</p>
                 </dd>
             </div>
 
@@ -53,7 +53,7 @@
                     <p class="ml-16 truncate text-sm font-medium text-gray-500">Total Expenses</p>
                 </dt>
                 <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                    <p class="text-2xl font-semibold text-red-600">₹{{ number_format($expenses, 2) }}</p>
+                    <p class="text-2xl font-semibold text-red-600">@currency($expenses)</p>
                 </dd>
             </div>
 
@@ -68,7 +68,7 @@
                     <p class="ml-16 truncate text-sm font-medium text-gray-500">Net Profit</p>
                 </dt>
                 <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                    <p class="text-2xl font-semibold {{ $netProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">₹{{ number_format($netProfit, 2) }}</p>
+                    <p class="text-2xl font-semibold {{ $netProfit >= 0 ? 'text-green-600' : 'text-red-600' }}">@currency($netProfit)</p>
                 </dd>
             </div>
 
@@ -138,7 +138,7 @@
                             @foreach($paymentMethods as $method)
                             <div class="flex justify-between items-center">
                                 <span class="text-sm font-medium text-gray-700">{{ ucwords(str_replace('_', ' ', $method->payment_method)) }}</span>
-                                <span class="text-sm text-gray-900">₹{{ number_format($method->total, 2) }}</span>
+                                <span class="text-sm text-gray-900">@currency($method->total)</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2">
                                 <div class="bg-indigo-600 h-2 rounded-full" style="width: {{ $revenue > 0 ? ($method->total / $revenue) * 100 : 0 }}%"></div>
@@ -241,9 +241,7 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        callback: function(value) {
-                            return '₹' + value.toLocaleString();
-                        }
+                        callback: function(value) { return 'PKR ' + value.toLocaleString(); }
                     }
                 }
             }
@@ -307,9 +305,7 @@
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        callback: function(value) {
-                            return '₹' + value.toLocaleString();
-                        }
+                        callback: function(value) { return 'PKR ' + value.toLocaleString(); }
                     }
                 }
             }

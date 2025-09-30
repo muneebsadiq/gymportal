@@ -152,7 +152,7 @@
 
                 <!-- Membership Plan Assignment -->
                 <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Membership Plan</h3>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Membership Plan & Coach</h3>
                     <div class="grid grid-cols-1 gap-6">
                         <div>
                             <label for="membership_plan_id" class="block text-sm font-medium text-gray-700">Select Plan <span class="text-red-600">*</span></label>
@@ -165,7 +165,7 @@
                                             data-duration-type="{{ $plan->duration_type }}"
                                             data-description="{{ $plan->description }}"
                                             {{ old('membership_plan_id') == $plan->id ? 'selected' : '' }}>
-                                        {{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, ₹{{ number_format($plan->fee, 2) }})
+                                        {{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, @currency($plan->fee)))
                                     </option>
                                 @endforeach
                             </select>
@@ -181,10 +181,24 @@
                                     <div class="text-gray-600" id="plan_info_desc"></div>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-gray-900 font-semibold">₹<span id="plan_info_fee">0</span></div>
+                                    <div class="text-gray-900 font-semibold">PKR <span id="plan_info_fee">0</span></div>
                                     <div class="text-gray-600"><span id="plan_info_duration_value">0</span> <span id="plan_info_duration_type">months</span></div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div>
+                            <label for="coach_id" class="block text-sm font-medium text-gray-700">Assign Coach</label>
+                            <select name="coach_id" id="coach_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="">No Coach</option>
+                                @php($coaches = \App\Models\Coach::orderBy('name')->get())
+                                @foreach($coaches as $coach)
+                                    <option value="{{ $coach->id }}" {{ old('coach_id') == $coach->id ? 'selected' : '' }}>{{ $coach->name }} {{ $coach->specialization ? '(' . $coach->specialization . ')' : '' }}</option>
+                                @endforeach
+                            </select>
+                            @error('coach_id')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                 </div>

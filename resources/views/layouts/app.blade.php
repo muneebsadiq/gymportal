@@ -48,6 +48,9 @@
                             <a href="{{ route('payments.index') }}" class="{{ request()->routeIs('payments.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} flex items-center px-1 pt-1 border-b-2 text-sm font-medium mr-8 last:mr-0">
                                 Payments
                             </a>
+                            <a href="{{ route('coaches.index') }}" class="{{ request()->routeIs('coaches.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} flex items-center px-1 pt-1 border-b-2 text-sm font-medium mr-8 last:mr-0">
+                                Coaches
+                            </a>
                             <a href="{{ route('expenses.index') }}" class="{{ request()->routeIs('expenses.*') ? 'border-indigo-500 text-gray-900' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700' }} flex items-center px-1 pt-1 border-b-2 text-sm font-medium mr-8 last:mr-0">
                                 Expenses
                             </a>

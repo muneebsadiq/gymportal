@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
 
     // Payments
     Route::resource('payments', PaymentController::class);
+    Route::resource('coaches', \App\Http\Controllers\CoachController::class);
     Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
 
     // Expenses

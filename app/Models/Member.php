@@ -11,7 +11,7 @@ class Member extends Model
     protected $fillable = [
         'member_id', 'name', 'email', 'phone', 'address', 
         'date_of_birth', 'gender', 'emergency_contact', 'emergency_phone',
-        'medical_conditions', 'profile_photo', 'status', 'joined_date'
+        'medical_conditions', 'profile_photo', 'status', 'joined_date', 'coach_id'
     ];
 
     protected $casts = [
@@ -31,6 +31,10 @@ class Member extends Model
     }
 
     // Relationships
+    public function coach()
+    {
+        return $this->belongsTo(Coach::class);
+    }
     public function memberships(): HasMany
     {
         return $this->hasMany(Membership::class);

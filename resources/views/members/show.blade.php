@@ -117,7 +117,7 @@
                                     </div>
                                 </div>
                                 <div class="text-right">
-                                    <p class="text-sm font-medium text-gray-900">₹{{ number_format($payment->amount, 2) }}</p>
+                                    <p class="text-sm font-medium text-gray-900">@currency($payment->amount)</p>
                                     <p class="text-xs text-gray-500">{{ ucfirst($payment->payment_method) }}</p>
                                 </div>
                             </div>
@@ -198,7 +198,7 @@
                         </div>
                         <div class="flex justify-between">
                             <span class="text-sm text-gray-500">Fee</span>
-                            <span class="text-sm font-medium text-gray-900">₹{{ number_format($activeAssignment->membershipPlan->fee ?? 0, 2) }}</span>
+                            <span class="text-sm font-medium text-gray-900">@currency($activeAssignment->membershipPlan->fee ?? 0)</span>
                         </div>
                         @php
                             $planFee = (float) ($activeAssignment->membershipPlan->fee ?? 0);
@@ -227,10 +227,10 @@
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>
                             @elseif($diff < 0)
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $isOverdue ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800' }}">
-                                    {{ $isOverdue ? 'Overdue' : 'Partial Due' }} (₹{{ number_format(abs($diff), 2) }})
+                                    {{ $isOverdue ? 'Overdue' : 'Partial Due' }} (@currency(abs($diff)))
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Excess (₹{{ number_format($diff, 2) }})</span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Excess (@currency($diff))</span>
                             @endif
                         </div>
                         <div class="flex items-center justify-between">
