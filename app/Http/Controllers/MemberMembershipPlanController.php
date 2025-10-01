@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\MemberMembershipPlan;
 use App\Models\MembershipPlan;
 use App\Models\Member;
+use App\Models\Commission;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class MemberMembershipPlanController extends Controller
 {
@@ -19,7 +21,10 @@ class MemberMembershipPlanController extends Controller
             'status' => 'required|in:active,expired,cancelled',
         ]);
 
-        MemberMembershipPlan::create($validated);
+        $assignment = MemberMembershipPlan::create($validated);
+
+        // Note: Commission will be created when member makes payment, not on assignment
+        // This ensures coaches only earn commission on PAID fees
 
         return redirect()->route('members.show', $validated['member_id'])
             ->with('success', 'Membership plan assigned successfully!');

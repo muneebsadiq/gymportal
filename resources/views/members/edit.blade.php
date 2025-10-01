@@ -86,16 +86,37 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Membership Plan & Coach</h3>
                         <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                             <div>
-                                <label for="membership_plan_id" class="block text-sm font-medium text-gray-700">Select Plan *</label>
-                                <select name="membership_plan_id" id="membership_plan_id" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                    <option value="">Select Plan</option>
+                                <label class="block text-sm font-medium text-gray-700">Current Plan</label>
+                                <div class="mt-1 w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-800">
+                                    @if(isset($currentAssignment) && $currentAssignment)
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <div class="font-medium">{{ $currentAssignment->membershipPlan->name ?? 'Plan' }}</div>
+                                                <div class="text-xs text-gray-500">Period: {{ \Carbon\Carbon::parse($currentAssignment->start_date)->format('M d, Y') }} → {{ \Carbon\Carbon::parse($currentAssignment->end_date)->format('M d, Y') }}</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <div class="text-gray-900 font-semibold">@currency($currentAssignment->membershipPlan->fee ?? 0)</div>
+                                                <div class="text-xs text-gray-500">{{ $currentAssignment->membershipPlan->duration_value }} {{ ucfirst($currentAssignment->membershipPlan->duration_type ?? '') }}</div>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <span class="text-gray-500">No membership assigned</span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="membership_plan_id" class="block text-sm font-medium text-gray-700">Change Plan</label>
+                                <select name="membership_plan_id" id="membership_plan_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                    <option value="">Keep Current Plan</option>
                                     @foreach($plans as $plan)
-                                        <option value="{{ $plan->id }}" {{ old('membership_plan_id', $member->membership_plan_id ?? '') == $plan->id ? 'selected' : '' }}>{{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, @currency($plan->fee))</option>
+                                        <option value="{{ $plan->id }}">{{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, @currency($plan->fee))</option>
                                     @endforeach
                                 </select>
                                 @error('membership_plan_id')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
+                                <p class="form-hint">Selecting a new plan will start a new period from today and close the current one.</p>
                             </div>
                             <div>
                                 <label for="coach_id" class="block text-sm font-medium text-gray-700">Assign Coach</label>

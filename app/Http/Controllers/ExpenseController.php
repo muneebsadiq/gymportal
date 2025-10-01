@@ -79,7 +79,8 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
-        return redirect()->route('expenses.index')->with('success', 'Expense recorded successfully!');
+        $expense->load('coach');
+        return view('expenses.show', compact('expense'));
     }
 
     /**

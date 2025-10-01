@@ -52,6 +52,17 @@
                         </select>
                         @error('status')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
                     </div>
+                    <div>
+                        <label for="salary" class="block text-sm font-medium text-gray-700">Monthly Salary</label>
+                        <input type="number" step="0.01" name="salary" id="salary" value="{{ old('salary', $coach->salary) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="0.00">
+                        @error('salary')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label for="commission_rate" class="block text-sm font-medium text-gray-700">Commission Rate (%)</label>
+                        <input type="number" step="0.01" name="commission_rate" id="commission_rate" value="{{ old('commission_rate', $coach->commission_rate) }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" placeholder="0.00">
+                        @error('commission_rate')<p class="mt-1 text-sm text-red-600">{{ $message }}</p>@enderror
+                        <p class="mt-1 text-xs text-gray-500">Percentage earned when a member is assigned to this coach</p>
+                    </div>
                 </div>
                 <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
                     <div class="flex justify-end space-x-3">

@@ -57,6 +57,11 @@ class Member extends Model
         return $this->hasMany(Payment::class);
     }
 
+    public function commissions(): HasMany
+    {
+        return $this->hasMany(Commission::class);
+    }
+
     public function activeMembershipPlans()
     {
         return $this->membershipPlans()->wherePivot('status', 'active');
@@ -75,29 +80,13 @@ class Member extends Model
 
     public function hasDueFees()
     {
-        // Any non-cancelled assignment where sum(payments within window) < fee and end_date is past
+        // Due if any non-cancelled assignment period has ended (next cycle payment needed)
         $assignments = $this->memberMembershipPlans()
             ->with('membershipPlan')
             ->where('status', '!=', 'cancelled')
             ->get();
         foreach ($assignments as $a) {
-            $planFee = (float) ($a->membershipPlan->fee ?? 0);
-            if ($planFee <= 0) continue;
-            $end = Carbon::parse($a->end_date)->endOfDay();
-            $dtype = strtolower($a->membershipPlan?->duration_type ?? 'month');
-            $dval = (int) ($a->membershipPlan?->duration_value ?? 1);
-            $start = match ($dtype) {
-                'day','days' => $end->copy()->subDays($dval)->startOfDay(),
-                'week','weeks' => $end->copy()->subWeeks($dval)->startOfDay(),
-                'month','months' => $end->copy()->subMonths($dval)->startOfDay(),
-                'year','years' => $end->copy()->subYears($dval)->startOfDay(),
-                default => $end->copy()->subMonths($dval)->startOfDay(),
-            };
-            $sum = Payment::where('member_membership_plan_id', $a->id)
-                ->where('payment_type', 'membership_fee')
-                ->whereBetween('payment_date', [$start->toDateString(), $end->toDateString()])
-                ->sum('amount');
-            if ($sum < $planFee && Carbon::parse($a->end_date)->isPast()) {
+            if (Carbon::parse($a->end_date)->isPast()) {
                 return true;
             }
         }
@@ -111,5 +100,38 @@ class Member extends Model
         if ($assignments->isEmpty()) return null;
         $min = $assignments->min('end_date');
         return $min ? Carbon::parse($min)->format('Y-m-d') : null;
+    }
+
+    public function scopeWithDueFees($query)
+    {
+        return $query->whereHas('memberMembershipPlans', function ($q) {
+            $q->where('status', '!=', 'cancelled')
+              ->where('end_date', '<', Carbon::now());
+        });
+    }
+
+    public function getActivePlanAttribute()
+    {
+        $assignment = $this->memberMembershipPlans()
+            ->with('membershipPlan')
+            ->where('status', 'active')
+            ->where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now())
+            ->orderByDesc('start_date')
+            ->first();
+        
+        return $assignment ? $assignment->membershipPlan : null;
+    }
+
+    public function hasPaymentDue()
+    {
+        // Check if member has any pending or partial payments that are overdue
+        return $this->payments()
+            ->whereIn('status', ['pending', 'partial'])
+            ->where(function ($q) {
+                $q->where('due_date', '<', Carbon::now())
+                  ->orWhereNull('due_date');
+            })
+            ->exists();
     }
 }

@@ -148,12 +148,6 @@
                                         <div class="flex items-center space-x-3">
                                             <a href="{{ route('payments.show', $payment) }}" class="btn-secondary btn-sm">View</a>
                                             <a href="{{ route('payments.receipt', $payment) }}" class="btn-primary btn-sm">Receipt</a>
-                                            <a href="{{ route('payments.edit', $payment) }}" class="btn-secondary btn-sm">Edit</a>
-                                            <form action="{{ route('payments.destroy', $payment) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this payment? This action cannot be undone.');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-danger btn-sm">Delete</button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>

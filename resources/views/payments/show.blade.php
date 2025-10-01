@@ -11,8 +11,7 @@
                 <p class="text-sm text-gray-500">Receipt: {{ $payment->receipt_number }}</p>
             </div>
             <div class="mt-4 flex md:mt-0 md:ml-4 space-x-2">
-                <a href="{{ route('payments.receipt', $payment) }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">Receipt</a>
-                <a href="{{ route('payments.edit', $payment) }}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Edit</a>
+                <a href="{{ route('payments.receipt', $payment) }}" class="btn-primary">Receipt</a>
                 <a href="{{ route('payments.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Back</a>
             </div>
         </div>

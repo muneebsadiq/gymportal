@@ -16,14 +16,12 @@ class ReportController extends Controller
         $month = $request->get('month', Carbon::now()->format('Y-m'));
         $date = Carbon::parse($month . '-01');
         
-        // Revenue data
-        $revenue = Payment::whereIn('status', ['paid', 'partial'])
-            ->whereYear('payment_date', $date->year)
+        // Revenue data (sum all payments recorded this month)
+        $revenue = Payment::whereYear('payment_date', $date->year)
             ->whereMonth('payment_date', $date->month)
             ->sum('amount');
             
-        $revenueByType = Payment::whereIn('status', ['paid', 'partial'])
-            ->whereYear('payment_date', $date->year)
+        $revenueByType = Payment::whereYear('payment_date', $date->year)
             ->whereMonth('payment_date', $date->month)
             ->select('payment_type', DB::raw('SUM(amount) as total'))
             ->groupBy('payment_type')
@@ -48,8 +46,7 @@ class ReportController extends Controller
         $totalActiveMembers = Member::where('status', 'active')->count();
         
         // Payment method breakdown
-        $paymentMethods = Payment::whereIn('status', ['paid', 'partial'])
-            ->whereYear('payment_date', $date->year)
+        $paymentMethods = Payment::whereYear('payment_date', $date->year)
             ->whereMonth('payment_date', $date->month)
             ->select('payment_method', DB::raw('SUM(amount) as total'))
             ->groupBy('payment_method')
@@ -59,8 +56,7 @@ class ReportController extends Controller
         $netProfit = $revenue - $expenses;
         
         // Daily revenue for the month
-        $dailyRevenue = Payment::whereIn('status', ['paid', 'partial'])
-            ->whereYear('payment_date', $date->year)
+        $dailyRevenue = Payment::whereYear('payment_date', $date->year)
             ->whereMonth('payment_date', $date->month)
             ->select(DB::raw('DAY(payment_date) as day'), DB::raw('SUM(amount) as total'))
             ->groupBy('day')

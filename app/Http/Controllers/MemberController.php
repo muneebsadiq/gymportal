@@ -18,7 +18,7 @@ class MemberController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Member::with('memberships');
+        $query = Member::with('memberships', 'memberMembershipPlans.membershipPlan', 'payments');
 
         if ($request->search) {
             $query->where(function ($q) use ($request) {
@@ -30,6 +30,22 @@ class MemberController extends Controller
 
         if ($request->status) {
             $query->where('status', $request->status);
+        }
+
+        // Filter for members with payment due
+        if ($request->has('payment_due') && $request->payment_due == '1') {
+            $query->whereHas('payments', function ($q) {
+                $q->whereIn('status', ['pending', 'partial'])
+                  ->where(function ($subQ) {
+                      $subQ->where('due_date', '<', Carbon::now())
+                           ->orWhereNull('due_date');
+                  });
+            });
+        }
+
+        // Filter for members with due fees
+        if ($request->has('due_fees') && $request->due_fees == '1') {
+            $query->withDueFees();
         }
 
         $members = $query->latest()->paginate(20);
@@ -111,7 +127,17 @@ class MemberController extends Controller
     {
         $plans = \App\Models\MembershipPlan::all();
         $coaches = Coach::orderBy('name')->get();
-        return view('members.edit', compact('member','plans','coaches'));
+        // Determine currently assigned membership plan (active window includes today, fallback to most recent)
+        $currentAssignment = $member->memberMembershipPlans()
+            ->with('membershipPlan')
+            ->orderByDesc('end_date')
+            ->get()
+            ->first(function ($a) {
+                $today = \Carbon\Carbon::today();
+                return $today->betweenIncluded(\Carbon\Carbon::parse($a->start_date), \Carbon\Carbon::parse($a->end_date));
+            }) ?? $member->memberMembershipPlans()->with('membershipPlan')->orderByDesc('end_date')->first();
+
+        return view('members.edit', compact('member','plans','coaches','currentAssignment'));
     }
 
     /**

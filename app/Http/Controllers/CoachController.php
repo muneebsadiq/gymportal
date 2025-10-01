@@ -9,7 +9,12 @@ class CoachController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Coach::query();
+        $query = Coach::with(['expenses' => function($q) {
+            $q->where('expense_type', 'Coach Salary')
+              ->whereYear('expense_date', now()->year)
+              ->whereMonth('expense_date', now()->month);
+        }]);
+        
         if ($request->search) {
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%'.$request->search.'%')
@@ -38,6 +43,8 @@ class CoachController extends Controller
             'specialization' => 'nullable|string|max:255',
             'join_date' => 'nullable|date',
             'status' => 'required|in:active,inactive',
+            'salary' => 'nullable|numeric|min:0',
+            'commission_rate' => 'nullable|numeric|min:0|max:100',
         ]);
 
         Coach::create($validated);
@@ -46,7 +53,81 @@ class CoachController extends Controller
 
     public function show(Coach $coach)
     {
-        return view('coaches.show', compact('coach'));
+        $coach->load(['members.memberMembershipPlans.membershipPlan', 'members.payments', 'commissions', 'expenses' => function($q) {
+            $q->where('expense_type', 'Coach Salary')->latest('expense_date');
+        }]);
+        
+        // Check if salary already paid for current month
+        $currentMonth = now()->format('Y-m');
+        $salaryPaidThisMonth = $coach->expenses()
+            ->where('expense_type', 'Coach Salary')
+            ->whereYear('expense_date', now()->year)
+            ->whereMonth('expense_date', now()->month)
+            ->exists();
+        
+        // Calculate total monthly fees of all assigned members (only from PAID fees)
+        $totalMemberFees = 0;
+        $memberFeesBreakdown = [];
+        
+        foreach ($coach->members as $member) {
+            // Get active membership plan
+            $activePlan = $member->memberMembershipPlans()
+                ->with('membershipPlan')
+                ->where('status', 'active')
+                ->where('start_date', '<=', now())
+                ->where('end_date', '>=', now())
+                ->first();
+            
+            if ($activePlan && $activePlan->membershipPlan) {
+                // Only count if member has paid fees for current month
+                $hasPaidThisMonth = $member->payments()
+                    ->whereIn('status', ['paid', 'partial'])
+                    ->whereYear('payment_date', now()->year)
+                    ->whereMonth('payment_date', now()->month)
+                    ->exists();
+                
+                if ($hasPaidThisMonth) {
+                    $fee = $activePlan->membershipPlan->fee;
+                    $totalMemberFees += $fee;
+                    $memberFeesBreakdown[] = [
+                        'member' => $member,
+                        'plan' => $activePlan->membershipPlan,
+                        'fee' => $fee,
+                        'paid' => true
+                    ];
+                } else {
+                    // Include in breakdown but mark as unpaid
+                    $memberFeesBreakdown[] = [
+                        'member' => $member,
+                        'plan' => $activePlan->membershipPlan,
+                        'fee' => $activePlan->membershipPlan->fee,
+                        'paid' => false
+                    ];
+                }
+            }
+        }
+        
+        // Calculate commission based on total PAID member fees
+        $calculatedCommission = 0;
+        if ($coach->commission_rate && $totalMemberFees > 0) {
+            $calculatedCommission = ($totalMemberFees * $coach->commission_rate) / 100;
+        }
+        
+        // Keep track of old commission system for reference
+        $totalCommissions = $coach->commissions()->sum('amount');
+        $unpaidCommissions = $coach->commissions()->where('status', 'unpaid')->sum('amount');
+        $totalSalaryPaid = $coach->expenses()->where('expense_type', 'Coach Salary')->sum('amount');
+        
+        return view('coaches.show', compact(
+            'coach', 
+            'totalCommissions', 
+            'unpaidCommissions', 
+            'totalSalaryPaid',
+            'totalMemberFees',
+            'calculatedCommission',
+            'memberFeesBreakdown',
+            'salaryPaidThisMonth'
+        ));
     }
 
     public function edit(Coach $coach)
@@ -63,6 +144,8 @@ class CoachController extends Controller
             'specialization' => 'nullable|string|max:255',
             'join_date' => 'nullable|date',
             'status' => 'required|in:active,inactive',
+            'salary' => 'nullable|numeric|min:0',
+            'commission_rate' => 'nullable|numeric|min:0|max:100',
         ]);
 
         $coach->update($validated);

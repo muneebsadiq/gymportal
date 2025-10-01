@@ -8,8 +8,8 @@ class Expense extends Model
 {
     protected $fillable = [
         'expense_number', 'title', 'description', 'amount',
-        'expense_date', 'category', 'payment_method', 
-        'vendor_name', 'receipt_file'
+        'expense_date', 'category', 'expense_type', 'payment_method', 
+        'vendor_name', 'receipt_file', 'coach_id'
     ];
 
     protected $casts = [
@@ -37,5 +37,10 @@ class Expense extends Model
     public function getPaymentMethodDisplayAttribute()
     {
         return ucwords(str_replace('_', ' ', $this->payment_method));
+    }
+
+    public function coach()
+    {
+        return $this->belongsTo(Coach::class);
     }
 }

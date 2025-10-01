@@ -23,7 +23,7 @@
         <!-- Filters -->
         <div class="mt-6 bg-white shadow rounded-lg p-6">
             <form method="GET" action="{{ route('members.index') }}">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-4">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-6">
                     <div>
                         <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
                         <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Name, ID, or phone">
@@ -36,6 +36,22 @@
                             <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Active</option>
                             <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
                             <option value="suspended" {{ request('status') === 'suspended' ? 'selected' : '' }}>Suspended</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="payment_due" class="block text-sm font-medium text-gray-700">Payment Due</label>
+                        <select name="payment_due" id="payment_due" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">All Members</option>
+                            <option value="1" {{ request('payment_due') === '1' ? 'selected' : '' }}>Payment Due Only</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="due_fees" class="block text-sm font-medium text-gray-700">Fee Status</label>
+                        <select name="due_fees" id="due_fees" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">All Members</option>
+                            <option value="1" {{ request('due_fees') === '1' ? 'selected' : '' }}>Due Fees Only</option>
                         </select>
                     </div>
 
@@ -79,6 +95,11 @@
                                            ($member->status === 'inactive' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800') }}">
                                         {{ ucfirst($member->status) }}
                                     </span>
+                                    @if($member->hasPaymentDue())
+                                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                        Payment Due
+                                    </span>
+                                    @endif
                                     @if($member->hasDueFees())
                                     <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         Due Fees
@@ -87,7 +108,9 @@
                                 </div>
                                 <div class="flex items-center text-sm text-gray-500">
                                     <p>{{ $member->member_id }} • {{ $member->phone }}</p>
-                                    @if($member->activeMembership())
+                                    @if($member->active_plan)
+                                    <p class="ml-2">• {{ $member->active_plan->name }}</p>
+                                    @elseif($member->activeMembership())
                                     <p class="ml-2">• {{ $member->activeMembership()->plan_name }}</p>
                                     @endif
                                 </div>

@@ -23,11 +23,20 @@ Route::middleware('auth')->group(function () {
 
     // Payments
     Route::resource('payments', PaymentController::class);
-    Route::resource('coaches', \App\Http\Controllers\CoachController::class);
     Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt'])->name('payments.receipt');
+    
+    // Coaches
+    Route::resource('coaches', \App\Http\Controllers\CoachController::class);
+    Route::post('coaches/{coach}/pay-salary', [\App\Http\Controllers\CoachSalaryController::class, 'paySalary'])->name('coaches.pay-salary');
+    Route::get('coaches/{coach}/salary-history', [\App\Http\Controllers\CoachSalaryController::class, 'salaryHistory'])->name('coaches.salary-history');
 
     // Expenses
     Route::resource('expenses', ExpenseController::class);
+
+    // Settings
+    Route::get('settings', [\App\Http\Controllers\SettingController::class, 'index'])->name('settings.index');
+    Route::get('settings/edit', [\App\Http\Controllers\SettingController::class, 'edit'])->name('settings.edit');
+    Route::put('settings', [\App\Http\Controllers\SettingController::class, 'update'])->name('settings.update');
 
     // Reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');

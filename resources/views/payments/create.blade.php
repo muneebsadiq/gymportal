@@ -44,30 +44,29 @@
                             @enderror
                         </div>
 
-                        <!-- Membership Assignment -->
-                        <div class="sm:col-span-2">
-                            <label for="member_membership_plan_id" class="block text-sm font-medium text-gray-700">Membership *</label>
-                            <select name="member_membership_plan_id" id="member_membership_plan_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                                <option value="">Select Membership</option>
-                                @if(isset($assignments) && $assignments->count())
-                                    @foreach($assignments as $a)
-                                        <option value="{{ $a->id }}"
-                                            data-fee="{{ $a->membershipPlan->fee ?? 0 }}"
-                                            data-duration-type="{{ $a->membershipPlan->duration_type ?? 'month' }}"
-                                            data-duration-value="{{ $a->membershipPlan->duration_value ?? 1 }}"
-                                            data-end-date="{{ $a->end_date }}"
-                                            {{ old('member_membership_plan_id') == $a->id ? 'selected' : '' }}>
-                                            {{ $a->membershipPlan->name ?? 'Plan' }} • Ends {{ \Carbon\Carbon::parse($a->end_date)->format('M d, Y') }}
-                                        </option>
-                                    @endforeach
+                        <!-- Membership Assignment (auto-selected) -->
+                        <div class="sm:col-span-2" id="membership_block">
+                            <label class="block text-sm font-medium text-gray-700">Membership *</label>
+                            <div class="mt-1 w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-800">
+                                @if($selectedMember && $currentAssignment)
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium">{{ $currentAssignment->membershipPlan->name ?? 'Plan' }}</div>
+                                            <div class="text-xs text-gray-500">Current period: {{ \Carbon\Carbon::parse($currentAssignment->start_date)->format('M d, Y') }} → {{ \Carbon\Carbon::parse($currentAssignment->end_date)->format('M d, Y') }}</div>
+                                        </div>
+                                        <div class="text-right">
+                                            <div class="text-gray-900 font-semibold">@currency($currentAssignment->membershipPlan->fee ?? 0)</div>
+                                            <div class="text-xs text-gray-500">Duration: {{ $currentAssignment->membershipPlan->duration_value }} {{ ucfirst($currentAssignment->membershipPlan->duration_type) }}</div>
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="member_membership_plan_id" value="{{ $currentAssignment->id }}">
+                                @else
+                                    <span class="text-gray-500">Select a member to load current membership automatically.</span>
                                 @endif
-                            </select>
+                            </div>
                             @error('member_membership_plan_id')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            @if(!isset($assignments) || !$assignments->count())
-                                <p class="mt-1 text-xs text-gray-500">Select a member to load their memberships.</p>
-                            @endif
                         </div>
 
                         <!-- Amount -->
@@ -184,34 +183,21 @@
         return d.toISOString().split('T')[0];
     }
 
-    function applyAssignmentDefaults() {
-        const opt = assignmentSelect ? assignmentSelect.options[assignmentSelect.selectedIndex] : null;
-        if (!opt || !opt.dataset) return;
-        const fee = opt.dataset.fee || '';
-        const endDate = opt.dataset.endDate; // current assignment end date
-        const durType = opt.dataset.durationType;
-        const durValue = opt.dataset.durationValue;
+    function applyAssignmentDefaults() {}
 
-        if (!amountInput.value && fee) amountInput.value = fee;
-        if (paymentType && !paymentType.value) paymentType.value = 'membership_fee';
+    // assignmentSelect intentionally unused; membership auto-selected server-side
 
-        // Suggest next due date = max(today/payment_date, current end) + duration
-        const base = new Date(Math.max(
-            paymentDateInput && paymentDateInput.value ? new Date(paymentDateInput.value).getTime() : Date.now(),
-            endDate ? new Date(endDate).getTime() : 0
-        ));
-        dueDateInput.value = computeNextEndDate(base, durType, durValue);
+    // Toggle membership block based on payment type
+    function toggleMembershipBlock() {
+        const block = document.getElementById('membership_block');
+        if (!block) return;
+        const type = paymentType ? paymentType.value : '';
+        block.style.display = (type === 'membership_fee') ? '' : 'none';
     }
 
-    if (assignmentSelect) {
-        assignmentSelect.addEventListener('change', applyAssignmentDefaults);
-        // Initialize once if there's a preselected assignment
-        // If URL has member_membership_plan_id, preselect it
-        const preset = url.searchParams.get('member_membership_plan_id');
-        if (preset) {
-            assignmentSelect.value = preset;
-        }
-        if (assignmentSelect.value) applyAssignmentDefaults();
+    if (paymentType) {
+        paymentType.addEventListener('change', toggleMembershipBlock);
+        toggleMembershipBlock();
     }
     if (paymentDateInput) {
         paymentDateInput.addEventListener('change', function() {

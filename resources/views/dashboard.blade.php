@@ -12,7 +12,7 @@
                     Welcome back, {{ auth()->user()->name }}!
                 </h2>
                 <p class="mt-1 text-sm text-gray-500">
-                    Here's what's happening in your gym today.
+                    Here's what's happening at {{ $settings->gym_name }} today.
                 </p>
             </div>
         </div>
@@ -224,10 +224,13 @@ const memberChart = new Chart(memberCtx, {
 // Due Fees Modal
 function openDueFeesModal() {
     fetch('{{ route("due-fees-modal") }}')
-        .then(response => response.text())
-        .then(html => {
-            document.body.insertAdjacentHTML('beforeend', html);
-        });
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.html) {
+                document.body.insertAdjacentHTML('beforeend', data.html);
+            }
+        })
+        .catch(() => {});
 }
 </script>
 @endsection

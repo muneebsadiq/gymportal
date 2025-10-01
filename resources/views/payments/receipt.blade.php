@@ -20,8 +20,17 @@
                 <div class="print:p-8">
                     <div class="flex items-start justify-between">
                         <div>
-                            <h2 class="text-xl font-bold">GymPortal</h2>
-                            <p class="text-sm text-gray-500">Payment Receipt</p>
+                            @if($globalSettings->logo)
+                                <img src="{{ asset('storage/' . $globalSettings->logo) }}" alt="{{ $globalSettings->gym_name }}" class="h-16 w-auto object-contain mb-2">
+                            @endif
+                            <h2 class="text-xl font-bold">{{ $globalSettings->gym_name }}</h2>
+                            @if($globalSettings->gym_address)
+                                <p class="text-xs text-gray-500">{{ $globalSettings->gym_address }}</p>
+                            @endif
+                            @if($globalSettings->gym_phone)
+                                <p class="text-xs text-gray-500">Phone: {{ $globalSettings->gym_phone }}</p>
+                            @endif
+                            <p class="text-sm text-gray-500 mt-2 font-semibold">Payment Receipt</p>
                         </div>
                         <div class="text-right">
                             <p class="text-sm text-gray-500">Date: {{ optional($payment->payment_date)->format('M d, Y') }}</p>

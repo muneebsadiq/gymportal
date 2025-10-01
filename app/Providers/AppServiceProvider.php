@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
+use App\Models\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,11 @@ class AppServiceProvider extends ServiceProvider
     {
         Blade::directive('currency', function ($expression) {
             return "<?php echo 'PKR ' . number_format($expression, 2); ?>";
+        });
+
+        // Share settings with all views
+        View::composer('*', function ($view) {
+            $view->with('globalSettings', Setting::get());
         });
     }
 }
