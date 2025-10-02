@@ -25,7 +25,7 @@ class Member extends Model
         
         static::creating(function ($member) {
             if (!$member->member_id) {
-                $member->member_id = 'GYM' . str_pad(Member::max('id') + 1, 4, '0', STR_PAD_LEFT);
+                $member->member_id = 'MEM' . str_pad(Member::max('id') + 1, 4, '0', STR_PAD_LEFT);
             }
         });
     }

@@ -17,6 +17,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/due-fees-modal', [DashboardController::class, 'getDueFeesModal'])->name('due-fees-modal');
+    Route::get('/search-member', [DashboardController::class, 'searchMember'])->name('search-member');
+    Route::get('/search-coach', [DashboardController::class, 'searchCoach'])->name('search-coach');
 
     // Members
     Route::resource('members', MemberController::class);

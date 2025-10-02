@@ -71,7 +71,7 @@
         </div>
 
         <!-- Members list -->
-        <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-md">
+        <div class="mt-6 bg-white shadow-sm overflow-hidden sm:rounded-lg border border-gray-200">
             @if($members->count() > 0)
             <ul role="list" class="divide-y divide-gray-200">
                 @foreach($members as $member)

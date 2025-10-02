@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Coach extends Model
 {
     protected $fillable = [
-        'name', 'phone', 'email', 'specialization', 'join_date', 'status', 'salary', 'commission_rate'
+        'coach_id', 'name', 'phone', 'email', 'specialization', 'join_date', 'status', 'salary', 'commission_rate'
     ];
 
     protected $casts = [
@@ -16,6 +16,17 @@ class Coach extends Model
         'salary' => 'decimal:2',
         'commission_rate' => 'decimal:2',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($coach) {
+            if (!$coach->coach_id) {
+                $coach->coach_id = 'TRN' . str_pad(Coach::max('id') + 1, 4, '0', STR_PAD_LEFT);
+            }
+        });
+    }
 
     public function members(): HasMany
     {

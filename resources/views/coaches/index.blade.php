@@ -37,11 +37,13 @@
         </div>
 
         <div class="mt-6">
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg border border-gray-200">
                 @if($coaches->count() > 0)
+                <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coach ID</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Contact</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Specialization</th>
@@ -54,6 +56,9 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($coaches as $coach)
                         <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-semibold text-indigo-600">{{ $coach->coach_id ?: '—' }}</div>
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm font-medium text-gray-900">{{ $coach->name }}</div>
                                 <div class="text-sm text-gray-500">{{ optional($coach->join_date)->format('M d, Y') ?: 'No join date' }}</div>
@@ -89,20 +94,23 @@
                                     @endif
                                 </div>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('coaches.show', $coach) }}" class="btn-secondary btn-sm">View</a>
-                                <a href="{{ route('coaches.edit', $coach) }}" class="ml-2 btn-secondary btn-sm">Edit</a>
-                                <form action="{{ route('coaches.destroy', $coach) }}" method="POST" class="inline" onsubmit="return confirm('Delete this coach?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="ml-2 btn-danger btn-sm">Delete</button>
-                                </form>
+                            <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-1">
+                                    <a href="{{ route('coaches.show', $coach) }}" class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">View</a>
+                                    <a href="{{ route('coaches.edit', $coach) }}" class="inline-flex items-center px-2 py-1 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">Edit</a>
+                                    <form action="{{ route('coaches.destroy', $coach) }}" method="POST" class="inline" onsubmit="return confirm('Delete this coach?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center px-2 py-1 border border-red-300 text-xs font-medium rounded text-red-700 bg-white hover:bg-red-50">Del</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-                <div class="bg-white px-4 py-3 border-t">{{ $coaches->links() }}</div>
+                </div>
+                <div class="bg-white px-4 py-3 border-t border-gray-200">{{ $coaches->links() }}</div>
                 @else
                 <div class="text-center py-12">
                     <h3 class="mt-2 text-sm font-medium text-gray-900">No coaches found</h3>
