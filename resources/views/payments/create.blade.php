@@ -44,6 +44,21 @@
                             @enderror
                         </div>
 
+                        <!-- Payment Type -->
+                        <div class="sm:col-span-2">
+                            <label for="payment_type" class="block text-sm font-medium text-gray-700">Payment Type *</label>
+                            <select name="payment_type" id="payment_type" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <option value="">Select Type</option>
+                                <option value="membership_fee" {{ old('payment_type') === 'membership_fee' ? 'selected' : '' }}>Membership Fee</option>
+                                <option value="admission_fee" {{ old('payment_type') === 'admission_fee' ? 'selected' : '' }}>Admission Fee</option>
+                                <option value="personal_training" {{ old('payment_type') === 'personal_training' ? 'selected' : '' }}>Personal Training</option>
+                                <option value="other" {{ old('payment_type') === 'other' ? 'selected' : '' }}>Other</option>
+                            </select>
+                            @error('payment_type')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <!-- Membership Assignment (auto-selected) -->
                         <div class="sm:col-span-2" id="membership_block">
                             <label class="block text-sm font-medium text-gray-700">Membership *</label>
@@ -108,21 +123,6 @@
                                 <option value="other" {{ old('payment_method') === 'other' ? 'selected' : '' }}>Other</option>
                             </select>
                             @error('payment_method')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <!-- Payment Type -->
-                        <div>
-                            <label for="payment_type" class="block text-sm font-medium text-gray-700">Payment Type *</label>
-                            <select name="payment_type" id="payment_type" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="">Select Type</option>
-                                <option value="membership_fee" {{ old('payment_type') === 'membership_fee' ? 'selected' : '' }}>Membership Fee</option>
-                                <option value="admission_fee" {{ old('payment_type') === 'admission_fee' ? 'selected' : '' }}>Admission Fee</option>
-                                <option value="personal_training" {{ old('payment_type') === 'personal_training' ? 'selected' : '' }}>Personal Training</option>
-                                <option value="other" {{ old('payment_type') === 'other' ? 'selected' : '' }}>Other</option>
-                            </select>
-                            @error('payment_type')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
