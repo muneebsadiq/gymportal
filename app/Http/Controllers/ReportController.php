@@ -108,14 +108,26 @@ class ReportController extends Controller
         }
         
         $payments = $query->latest('payment_date')->paginate(50);
-        $totalAmount = $query->sum('amount');
+        
+        // Calculate total separately to avoid pagination issues
+        $totalQuery = Payment::query();
+        if ($request->date_from) {
+            $totalQuery->where('payment_date', '>=', $request->date_from);
+        }
+        if ($request->date_to) {
+            $totalQuery->where('payment_date', '<=', $request->date_to);
+        }
+        if ($request->payment_type) {
+            $totalQuery->where('payment_type', $request->payment_type);
+        }
+        $totalAmount = $totalQuery->sum('amount');
         
         return view('reports.payments', compact('payments', 'totalAmount'));
     }
 
     public function expenseReport(Request $request)
     {
-        $query = Expense::query();
+        $query = Expense::with('coach');
         
         if ($request->date_from) {
             $query->where('expense_date', '>=', $request->date_from);
@@ -130,7 +142,19 @@ class ReportController extends Controller
         }
         
         $expenses = $query->latest('expense_date')->paginate(50);
-        $totalAmount = $query->sum('amount');
+        
+        // Calculate total separately to avoid pagination issues
+        $totalQuery = Expense::query();
+        if ($request->date_from) {
+            $totalQuery->where('expense_date', '>=', $request->date_from);
+        }
+        if ($request->date_to) {
+            $totalQuery->where('expense_date', '<=', $request->date_to);
+        }
+        if ($request->category) {
+            $totalQuery->where('category', $request->category);
+        }
+        $totalAmount = $totalQuery->sum('amount');
         
         return view('reports.expenses', compact('expenses', 'totalAmount'));
     }

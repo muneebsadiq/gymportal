@@ -153,48 +153,82 @@
             </div>
         </div>
 
-        <!-- Quick Links -->
-        <div class="mt-8">
-            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Detailed Reports</h3>
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <a href="{{ route('reports.members') }}" class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <span class="absolute inset-0" aria-hidden="true"></span>
-                        <p class="text-sm font-medium text-gray-900">Member Report</p>
-                        <p class="text-sm text-gray-500 truncate">Detailed member analysis</p>
-                    </div>
-                </a>
+        <!-- Detailed Reports Section -->
+        <div class="mt-8 mb-8">
+            <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-6 border border-indigo-100">
+                <h3 class="text-xl font-bold text-gray-900 mb-2">Detailed Reports</h3>
+                <p class="text-sm text-gray-600 mb-6">Access comprehensive reports for in-depth analysis</p>
+                
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <!-- Member Report -->
+                    <a href="{{ route('reports.members') }}" class="group relative rounded-lg border-2 border-indigo-200 bg-white px-6 py-6 shadow-sm hover:shadow-md hover:border-indigo-400 transition-all duration-200 transform hover:-translate-y-1">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 rounded-lg bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                                    <svg class="h-7 w-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-base font-bold text-gray-900 mb-1 group-hover:text-indigo-600 transition-colors">Member Report</p>
+                                <p class="text-sm text-gray-600">Detailed member analysis and statistics</p>
+                                <div class="mt-3 flex items-center text-sm font-medium text-indigo-600 group-hover:text-indigo-700">
+                                    View Report
+                                    <svg class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
 
-                <a href="{{ route('reports.payments') }}" class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <span class="absolute inset-0" aria-hidden="true"></span>
-                        <p class="text-sm font-medium text-gray-900">Payment Report</p>
-                        <p class="text-sm text-gray-500 truncate">Payment transactions analysis</p>
-                    </div>
-                </a>
+                    <!-- Payment Report -->
+                    <a href="{{ route('reports.payments') }}" class="group relative rounded-lg border-2 border-green-200 bg-white px-6 py-6 shadow-sm hover:shadow-md hover:border-green-400 transition-all duration-200 transform hover:-translate-y-1">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                                    <svg class="h-7 w-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-base font-bold text-gray-900 mb-1 group-hover:text-green-600 transition-colors">Payment Report</p>
+                                <p class="text-sm text-gray-600">Payment transactions and revenue analysis</p>
+                                <div class="mt-3 flex items-center text-sm font-medium text-green-600 group-hover:text-green-700">
+                                    View Report
+                                    <svg class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
 
-                <a href="{{ route('reports.expenses') }}" class="relative rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm flex items-center space-x-3 hover:border-gray-400">
-                    <div class="flex-shrink-0">
-                        <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <span class="absolute inset-0" aria-hidden="true"></span>
-                        <p class="text-sm font-medium text-gray-900">Expense Report</p>
-                        <p class="text-sm text-gray-500 truncate">Business expenses breakdown</p>
-                    </div>
-                </a>
+                    <!-- Expense Report -->
+                    <a href="{{ route('reports.expenses') }}" class="group relative rounded-lg border-2 border-red-200 bg-white px-6 py-6 shadow-sm hover:shadow-md hover:border-red-400 transition-all duration-200 transform hover:-translate-y-1">
+                        <div class="flex items-start space-x-4">
+                            <div class="flex-shrink-0">
+                                <div class="h-12 w-12 rounded-lg bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors">
+                                    <svg class="h-7 w-7 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-base font-bold text-gray-900 mb-1 group-hover:text-red-600 transition-colors">Expense Report</p>
+                                <p class="text-sm text-gray-600">Business expenses and cost breakdown</p>
+                                <div class="mt-3 flex items-center text-sm font-medium text-red-600 group-hover:text-red-700">
+                                    View Report
+                                    <svg class="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
