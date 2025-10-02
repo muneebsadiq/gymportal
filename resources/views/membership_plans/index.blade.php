@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Membership Plans</h2>
             <a href="{{ route('membership_plans.create') }}"
