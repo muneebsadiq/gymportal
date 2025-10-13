@@ -231,4 +231,116 @@ class MemberController extends Controller
 
         return redirect()->route('members.index')->with('success', 'Member deleted successfully!');
     }
+
+    /**
+     * Get member data via API
+     */
+    public function showApi($id)
+    {
+        $member = Member::where('id', $id)
+            ->with([
+                'memberMembershipPlans.membershipPlan',
+                'payments' => function($query) {
+                    $query->latest('payment_date')->take(10);
+                },
+                'coach'
+            ])
+            ->first();
+
+        if (!$member) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Member not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'member' => [
+                'id' => $member->id,
+                'member_id' => $member->member_id,
+                'name' => $member->name,
+                'email' => $member->email,
+                'phone' => $member->phone,
+                'address' => $member->address,
+                'date_of_birth' => $member->date_of_birth ? $member->date_of_birth->format('M d, Y') : null,
+                'age' => $member->age,
+                'gender' => $member->gender ? ucfirst($member->gender) : null,
+                'emergency_contact' => $member->emergency_contact,
+                'emergency_phone' => $member->emergency_phone,
+                'medical_conditions' => $member->medical_conditions,
+                'profile_photo' => $member->profile_photo ? asset('storage/' . $member->profile_photo) : null,
+                'status' => $member->status,
+                'joined_date' => $member->joined_date->format('M d, Y'),
+                'coach' => $member->coach ? $member->coach->name : null,
+                'has_due_fees' => $member->hasDueFees(),
+                'next_due_date' => $member->next_due_date ? Carbon::parse($member->next_due_date)->format('M d, Y') : null,
+                'active_plan' => $this->getActivePlanData($member),
+                'payments' => $member->payments->map(function($payment) {
+                    return [
+                        'id' => $payment->id,
+                        'receipt_number' => $payment->receipt_number,
+                        'amount' => number_format($payment->amount, 2),
+                        'payment_date' => $payment->payment_date->format('M d, Y'),
+                        'payment_type' => ucfirst(str_replace('_', ' ', $payment->payment_type)),
+                        'payment_method' => ucfirst($payment->payment_method),
+                        'status' => $payment->status,
+                    ];
+                }),
+                'view_url' => route('members.show', $member->id),
+                'edit_url' => route('members.edit', $member->id),
+                'payment_url' => route('payments.create', ['member_id' => $member->id]),
+            ]
+        ]);
+    }
+
+    private function getActivePlanData($member)
+    {
+        $activeAssignment = $member->memberMembershipPlans
+            ->where('status', 'active')
+            ->sortByDesc('start_date')
+            ->first();
+
+        if (!$activeAssignment || !$activeAssignment->membershipPlan) {
+            return null;
+        }
+
+        $plan = $activeAssignment->membershipPlan;
+        $windowEnd = Carbon::parse($activeAssignment->end_date);
+        $dtype = strtolower($plan->duration_type ?? 'month');
+        $dval = (int) ($plan->duration_value ?? 1);
+        
+        $windowStart = match ($dtype) {
+            'day','days' => $windowEnd->copy()->subDays($dval),
+            'week','weeks' => $windowEnd->copy()->subWeeks($dval),
+            'month','months' => $windowEnd->copy()->subMonths($dval),
+            'year','years' => $windowEnd->copy()->subYears($dval),
+            default => $windowEnd->copy()->subMonths($dval),
+        };
+
+        $planFee = (float) ($plan->fee ?? 0);
+        $paidInWindow = \App\Models\Payment::where('member_membership_plan_id', $activeAssignment->id)
+            ->where('payment_type', 'membership_fee')
+            ->whereBetween('payment_date', [$windowStart->toDateString(), $windowEnd->toDateString()])
+            ->sum('amount');
+        
+        $diff = $paidInWindow - $planFee;
+        $isOverdue = ($diff < 0) && $windowEnd->isPast();
+        $daysRemaining = Carbon::now()->diffInDays($windowEnd, false);
+
+        return [
+            'name' => $plan->name,
+            'description' => $plan->description,
+            'fee' => number_format($planFee, 2),
+            'duration' => $plan->duration_value . ' ' . ucfirst($plan->duration_type),
+            'start_date' => Carbon::parse($activeAssignment->start_date)->format('M d, Y'),
+            'end_date' => $windowEnd->format('M d, Y'),
+            'period_start' => $windowStart->format('M d, Y'),
+            'period_end' => $windowEnd->format('M d, Y'),
+            'days_remaining' => max($daysRemaining, 0),
+            'fee_status' => $diff === 0 ? 'paid' : ($diff < 0 ? ($isOverdue ? 'overdue' : 'partial') : 'excess'),
+            'fee_amount_due' => $diff < 0 ? number_format(abs($diff), 2) : null,
+            'fee_amount_excess' => $diff > 0 ? number_format($diff, 2) : null,
+        ];
+    }
 }
