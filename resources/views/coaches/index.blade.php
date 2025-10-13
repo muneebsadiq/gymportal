@@ -4,36 +4,51 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-        <div class="md:flex md:items-center md:justify-between">
+    <div class="container-fluid px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex-1 min-w-0">
-                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Coaches</h2>
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">Coaches</h2>
+                <p class="mt-1 text-sm text-gray-500">Manage gym coaches and their information</p>
             </div>
-            <div class="mt-4 flex md:mt-0 md:ml-4">
-                <a href="{{ route('coaches.create') }}" class="btn-primary">Add Coach</a>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{{ route('coaches.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                    Add Coach
+                </a>
             </div>
         </div>
 
-        <div class="mt-6 bg-white shadow rounded-lg p-6">
-            <form method="GET" action="{{ route('coaches.index') }}">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-6">
-                    <div class="sm:col-span-3">
-                        <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
-                        <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Name, phone, or email">
+        <!-- Filters -->
+        <div class="mt-6 bg-white shadow rounded-lg border border-gray-200">
+            <div class="px-4 py-5 sm:p-6">
+                <form method="GET" action="{{ route('coaches.index') }}" class="space-y-4">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <div class="sm:col-span-2 lg:col-span-2">
+                            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                            <input type="text" name="search" id="search" value="{{ request('search') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2" placeholder="Name, phone, or email">
+                        </div>
+                        <div class="sm:col-span-1 lg:col-span-1">
+                            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select name="status" id="status" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                                <option value="">All</option>
+                                <option value="active" {{ request('status')==='active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ request('status')==='inactive' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="sm:col-span-1 lg:col-span-1 flex items-end">
+                            <button type="submit" class="inline-flex items-center justify-center w-full px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                                </svg>
+                                Filter
+                            </button>
+                        </div>
                     </div>
-                    <div class="sm:col-span-2">
-                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                        <select name="status" id="status" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                            <option value="">All</option>
-                            <option value="active" {{ request('status')==='active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ request('status')==='inactive' ? 'selected' : '' }}>Inactive</option>
-                        </select>
-                    </div>
-                    <div class="sm:col-span-1 flex items-end">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">Filter</button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
 
         <div class="mt-6">

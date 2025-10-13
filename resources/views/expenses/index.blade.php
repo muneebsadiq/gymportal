@@ -4,14 +4,15 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <div class="container-fluid px-4 sm:px-6 lg:px-8">
         <!-- Header -->
-        <div class="md:flex md:items-center md:justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex-1 min-w-0">
-                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Expenses</h2>
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl">Expenses</h2>
+                <p class="mt-1 text-sm text-gray-500">Track and manage gym expenses</p>
             </div>
-            <div class="mt-4 flex md:mt-0 md:ml-4">
-                <a href="{{ route('expenses.create') }}" class="btn-primary">
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="{{ route('expenses.create') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
@@ -22,7 +23,7 @@
 
         <!-- Summary Card -->
         @if(isset($totalAmount) && $totalAmount > 0)
-        <div class="mt-6 bg-white overflow-hidden shadow rounded-lg">
+        <div class="mt-6 bg-white overflow-hidden shadow rounded-lg border border-gray-200">
             <div class="p-5">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
@@ -42,13 +43,50 @@
         @endif
 
         <!-- Filters -->
-        <div class="mt-6 bg-white shadow rounded-lg p-6">
-            <form method="GET" action="{{ route('expenses.index') }}">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-5">
-                    <div>
-                        <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
-                        <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Title or vendor">
+        <div class="mt-6 bg-white shadow rounded-lg border border-gray-200">
+            <div class="px-4 py-5 sm:p-6">
+                <form method="GET" action="{{ route('expenses.index') }}" class="space-y-4">
+                    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                        <div class="sm:col-span-2 lg:col-span-2">
+                            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+                            <input type="text" name="search" id="search" value="{{ request('search') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2" placeholder="Title or vendor">
+                        </div>
+
+                        <div class="sm:col-span-1 lg:col-span-1">
+                            <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                            <select name="category" id="category" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                                <option value="">All Categories</option>
+                                <option value="equipment" {{ request('category') === 'equipment' ? 'selected' : '' }}>Equipment</option>
+                                <option value="maintenance" {{ request('category') === 'maintenance' ? 'selected' : '' }}>Maintenance</option>
+                                <option value="utilities" {{ request('category') === 'utilities' ? 'selected' : '' }}>Utilities</option>
+                                <option value="supplies" {{ request('category') === 'supplies' ? 'selected' : '' }}>Supplies</option>
+                                <option value="marketing" {{ request('category') === 'marketing' ? 'selected' : '' }}>Marketing</option>
+                                <option value="other" {{ request('category') === 'other' ? 'selected' : '' }}>Other</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-1 lg:col-span-1">
+                            <label for="from_date" class="block text-sm font-medium text-gray-700 mb-1">From Date</label>
+                            <input type="date" name="from_date" id="from_date" value="{{ request('from_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                        </div>
+
+                        <div class="sm:col-span-1 lg:col-span-1">
+                            <label for="to_date" class="block text-sm font-medium text-gray-700 mb-1">To Date</label>
+                            <input type="date" name="to_date" id="to_date" value="{{ request('to_date') }}" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                        </div>
+
+                        <div class="sm:col-span-1 lg:col-span-1 flex items-end">
+                            <button type="submit" class="inline-flex items-center justify-center w-full px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                                </svg>
+                                Filter
+                            </button>
+                        </div>
                     </div>
+                </form>
+            </div>
+        </div>
                     
                     <div>
                         <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
