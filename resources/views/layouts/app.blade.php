@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('page-title', 'Gym Management') - {{ config('app.name', 'GymApp') }}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/gym-xpert-logo-black.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -32,8 +35,8 @@
                     <!-- Logo & Primary Nav -->
                     <div class="flex">
                         <div class="flex-shrink-0 flex items-center">
-                            <a href="{{ route('dashboard') }}" class="text-2xl font-bold text-indigo-600">
-                                💪 GymPro
+                            <a href="{{ route('dashboard') }}">
+                                <img src="/gym-xpert-logo-black.png" alt="Gym Xpert" class="h-8 w-auto">
                             </a>
                         </div>
                         
