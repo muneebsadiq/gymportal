@@ -22,6 +22,7 @@ Route::middleware('auth')->group(function () {
 
     // Members
     Route::resource('members', MemberController::class);
+    Route::get('members/api-view/{id}', [MemberController::class, 'showApiView'])->name('members.api-view');
 
     // Payments
     Route::resource('payments', PaymentController::class);
@@ -54,15 +55,13 @@ Route::middleware('auth')->group(function () {
     Route::post('member_membership_plans', [\App\Http\Controllers\MemberMembershipPlanController::class, 'store'])->name('member_membership_plans.store');
     Route::get('member_membership_plans/{memberMembershipPlan}/edit', [\App\Http\Controllers\MemberMembershipPlanController::class, 'edit'])->name('member_membership_plans.edit');
     Route::put('member_membership_plans/{memberMembershipPlan}', [\App\Http\Controllers\MemberMembershipPlanController::class, 'update'])->name('member_membership_plans.update');
-    Route::delete('member_membership_plans/{memberMembershipPlan}', [\App\Http\Controllers\MemberMembershipPlanController::class, 'destroy'])->name('member_membership_plans.destroy');
-
     // Membership Plans CRUD (admin only)
-    Route::get('membership_plans', [App\Http\Controllers\MembershipPlanController::class, 'index'])->name('membership_plans.index');
-    Route::get('membership_plans/create', [App\Http\Controllers\MembershipPlanController::class, 'create'])->name('membership_plans.create');
-    Route::post('membership_plans', [App\Http\Controllers\MembershipPlanController::class, 'store'])->name('membership_plans.store');
-    Route::get('membership_plans/{membershipPlan}/edit', [App\Http\Controllers\MembershipPlanController::class, 'edit'])->name('membership_plans.edit');
-    Route::put('membership_plans/{membershipPlan}', [App\Http\Controllers\MembershipPlanController::class, 'update'])->name('membership_plans.update');
-    Route::delete('membership_plans/{membershipPlan}', [App\Http\Controllers\MembershipPlanController::class, 'destroy'])->name('membership_plans.destroy');
+    Route::get('membership_plans', [\App\Http\Controllers\MembershipPlanController::class, 'index'])->name('membership_plans.index');
+    Route::get('membership_plans/create', [\App\Http\Controllers\MembershipPlanController::class, 'create'])->name('membership_plans.create');
+    Route::post('membership_plans', [\App\Http\Controllers\MembershipPlanController::class, 'store'])->name('membership_plans.store');
+    Route::get('membership_plans/{plan}/edit', [\App\Http\Controllers\MembershipPlanController::class, 'edit'])->name('membership_plans.edit');
+    Route::put('membership_plans/{plan}', [\App\Http\Controllers\MembershipPlanController::class, 'update'])->name('membership_plans.update');
+    Route::delete('membership_plans/{plan}', [\App\Http\Controllers\MembershipPlanController::class, 'destroy'])->name('membership_plans.destroy');
 });
 
 // Test route

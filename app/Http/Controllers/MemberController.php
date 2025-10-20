@@ -294,6 +294,65 @@ class MemberController extends Controller
         ]);
     }
 
+    /**
+     * Display member data from API in UI format
+     */
+    public function showApiView($id)
+    {
+        $member = Member::where('id', $id)
+            ->with([
+                'memberMembershipPlans.membershipPlan',
+                'payments' => function($query) {
+                    $query->latest('payment_date')->take(10);
+                },
+                'coach'
+            ])
+            ->first();
+
+        if (!$member) {
+            abort(404, 'Member not found');
+        }
+
+        // Format member data similar to API response
+        $memberData = [
+            'id' => $member->id,
+            'member_id' => $member->member_id,
+            'name' => $member->name,
+            'email' => $member->email,
+            'phone' => $member->phone,
+            'address' => $member->address,
+            'date_of_birth' => $member->date_of_birth ? $member->date_of_birth->format('M d, Y') : null,
+            'age' => $member->age,
+            'gender' => $member->gender ? ucfirst($member->gender) : null,
+            'emergency_contact' => $member->emergency_contact,
+            'emergency_phone' => $member->emergency_phone,
+            'medical_conditions' => $member->medical_conditions,
+            'profile_photo' => $member->profile_photo ? asset('storage/' . $member->profile_photo) : null,
+            'status' => $member->status,
+            'joined_date' => $member->joined_date->format('M d, Y'),
+            'coach' => $member->coach ? $member->coach->name : null,
+            'has_due_fees' => $member->hasDueFees(),
+            'next_due_date' => $member->next_due_date ? Carbon::parse($member->next_due_date)->format('M d, Y') : null,
+            'active_plan' => $this->getActivePlanData($member),
+            'payments' => $member->payments->map(function($payment) {
+                return [
+                    'id' => $payment->id,
+                    'receipt_number' => $payment->receipt_number,
+                    'amount' => number_format($payment->amount, 2),
+                    'payment_date' => $payment->payment_date->format('M d, Y'),
+                    'payment_type' => ucfirst(str_replace('_', ' ', $payment->payment_type)),
+                    'payment_method' => ucfirst($payment->payment_method),
+                    'status' => $payment->status,
+                ];
+            })->toArray(),
+            'view_url' => route('members.show', $member->id),
+            'edit_url' => route('members.edit', $member->id),
+            'payment_url' => route('payments.create', ['member_id' => $member->id]),
+        ];
+
+        return view('members.api-show', compact('memberData'));
+    }
+
     private function getActivePlanData($member)
     {
         $activeAssignment = $member->memberMembershipPlans

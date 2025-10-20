@@ -32,12 +32,12 @@ class MembershipPlanController extends Controller
         return redirect()->route('membership_plans.index')->with('success', 'Plan created successfully.');
     }
 
-    public function edit(MembershipPlan $membershipPlan)
+    public function edit(MembershipPlan $plan)
     {
-        return view('membership_plans.edit', compact('membershipPlan'));
+        return view('membership_plans.edit', compact('plan'));
     }
 
-    public function update(Request $request, MembershipPlan $membershipPlan)
+    public function update(Request $request, MembershipPlan $plan)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -47,13 +47,13 @@ class MembershipPlanController extends Controller
             'duration_value' => 'required|integer|min:1',
             'status' => 'required|in:active,inactive',
         ]);
-        $membershipPlan->update($validated);
+        $plan->update($validated);
         return redirect()->route('membership_plans.index')->with('success', 'Plan updated successfully.');
     }
 
-    public function destroy(MembershipPlan $membershipPlan)
+    public function destroy(MembershipPlan $plan)
     {
-        $membershipPlan->delete();
+        $plan->delete();
         return redirect()->route('membership_plans.index')->with('success', 'Plan deleted successfully.');
     }
 }
