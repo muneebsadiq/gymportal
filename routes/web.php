@@ -7,6 +7,10 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LandingController;
+
+// Public Routes
+Route::get('/', [LandingController::class, 'index'])->name('home');
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -15,7 +19,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 // Protected Routes (require authentication)
 Route::middleware('auth')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/due-fees-modal', [DashboardController::class, 'getDueFeesModal'])->name('due-fees-modal');
     Route::get('/search-member', [DashboardController::class, 'searchMember'])->name('search-member');
     Route::get('/search-coach', [DashboardController::class, 'searchCoach'])->name('search-coach');

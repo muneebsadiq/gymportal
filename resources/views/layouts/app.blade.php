@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('page-title', 'Gym Management') - {{ config('app.name', 'GymApp') }}</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/gym-xpert-logo-black.png">
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
