@@ -154,36 +154,40 @@
                 <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Membership Plan & Coach</h3>
                     <div class="grid grid-cols-1 gap-6">
+                        <!-- Plan Name -->
                         <div>
-                            <label for="membership_plan_id" class="block text-sm font-medium text-gray-700">Select Plan <span class="text-red-600">*</span></label>
-                            <select name="membership_plan_id" id="membership_plan_id" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                                <option value="">Select Plan</option>
-                                @foreach($plans as $plan)
-                                    <option value="{{ $plan->id }}"
-                                            data-fee="{{ $plan->fee }}"
-                                            data-duration-value="{{ $plan->duration_value }}"
-                                            data-duration-type="{{ $plan->duration_type }}"
-                                            data-description="{{ $plan->description }}"
-                                            {{ old('membership_plan_id') == $plan->id ? 'selected' : '' }}>
-                                        {{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, @currency($plan->fee)))
-                                    </option>
-                                @endforeach
-                            </select>
-                            @error('membership_plan_id')
+                            <label for="plan_name" class="block text-sm font-medium text-gray-700">Plan Name <span class="text-red-600">*</span></label>
+                            <input type="text" name="plan_name" id="plan_name" value="{{ old('plan_name') }}" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            @error('plan_name')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div id="plan_info" class="hidden rounded-md border border-gray-200 bg-gray-50 p-4 text-sm">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="text-gray-900 font-medium" id="plan_info_name">Selected Plan</div>
-                                    <div class="text-gray-600" id="plan_info_desc"></div>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-gray-900 font-semibold">PKR <span id="plan_info_fee">0</span></div>
-                                    <div class="text-gray-600"><span id="plan_info_duration_value">0</span> <span id="plan_info_duration_type">months</span></div>
-                                </div>
+                        <!-- Plan Description -->
+                        <div>
+                            <label for="plan_description" class="block text-sm font-medium text-gray-700">Plan Description</label>
+                            <textarea name="plan_description" id="plan_description" rows="2" class="mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md">{{ old('plan_description') }}</textarea>
+                            @error('plan_description')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Monthly Fee & Duration -->
+                        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                            <div>
+                                <label for="monthly_fee" class="block text-sm font-medium text-gray-700">Monthly Fee <span class="text-red-600">*</span></label>
+                                <input type="number" step="0.01" name="monthly_fee" id="monthly_fee" value="{{ old('monthly_fee') }}" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                @error('monthly_fee')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="duration_months" class="block text-sm font-medium text-gray-700">Duration (Months) <span class="text-red-600">*</span></label>
+                                <input type="number" name="duration_months" id="duration_months" value="{{ old('duration_months', 1) }}" min="1" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                                @error('duration_months')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
@@ -237,33 +241,6 @@ document.addEventListener('DOMContentLoaded', function () {
         preview.classList.add('hidden');
       }
     });
-  }
-
-  const planSelect = document.getElementById('membership_plan_id');
-  const infoBox = document.getElementById('plan_info');
-  const infoName = document.getElementById('plan_info_name');
-  const infoDesc = document.getElementById('plan_info_desc');
-  const infoFee = document.getElementById('plan_info_fee');
-  const infoDurVal = document.getElementById('plan_info_duration_value');
-  const infoDurType = document.getElementById('plan_info_duration_type');
-
-  function refreshPlanInfo() {
-    const opt = planSelect.options[planSelect.selectedIndex];
-    if (!opt || !opt.value) {
-      infoBox.classList.add('hidden');
-      return;
-    }
-    infoName.textContent = opt.text.split('(')[0].trim();
-    infoDesc.textContent = opt.getAttribute('data-description') || '';
-    infoFee.textContent = (opt.getAttribute('data-fee') || '0');
-    infoDurVal.textContent = (opt.getAttribute('data-duration-value') || '0');
-    infoDurType.textContent = (opt.getAttribute('data-duration-type') || '').toLowerCase();
-    infoBox.classList.remove('hidden');
-  }
-
-  if (planSelect) {
-    planSelect.addEventListener('change', refreshPlanInfo);
-    refreshPlanInfo();
   }
 });
 </script>
