@@ -493,11 +493,20 @@
                 <!-- Logo Section -->
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                            </svg>
-                        </div>
+                        @if($globalSettings->logo)
+                            <img src="{{ asset('storage/' . $globalSettings->logo) }}" alt="{{ $globalSettings->gym_name }}" class="w-10 h-10 rounded-lg shadow-lg object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg" style="display: none;">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                        @else
+                            <div class="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                        @endif
                         <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent navbar-logo-text">{{ $globalSettings->gym_name }}</span>
                     </a>
                 </div>
@@ -569,11 +578,20 @@
                     <!-- Sidebar Header -->
                     <div class="px-4 py-3 border-b border-gray-200/50">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
-                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                                </svg>
-                            </div>
+                            @if($globalSettings->logo)
+                                <img src="{{ asset('storage/' . $globalSettings->logo) }}" alt="{{ $globalSettings->gym_name }}" class="w-8 h-8 rounded-lg shadow-sm object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm" style="display: none;">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                            @else
+                                <div class="w-8 h-8 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-sm">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                            @endif
                             <div>
                                 <h2 class="text-sm font-semibold text-gray-900">{{ $globalSettings->gym_name }}</h2>
                                 <p class="text-xs text-gray-500">Management Portal</p>
