@@ -58,8 +58,9 @@ class MemberController extends Controller
      */
     public function create()
     {
-        $plans = \App\Models\MembershipPlan::all();
-        return view('members.create', compact('plans'));
+        $plans = MembershipPlan::all();
+        $coaches = Coach::orderBy('name')->get();
+        return view('members.create', compact('plans', 'coaches'));
     }
 
     /**
@@ -81,15 +82,12 @@ class MemberController extends Controller
             'joined_date' => 'required|date',
             'coach_id' => 'nullable|exists:coaches,id',
             
-            // Membership details
-            'plan_name' => 'required|string|max:255',
-            'plan_description' => 'nullable|string',
-            'monthly_fee' => 'required|numeric|min:0',
-            'duration_months' => 'required|integer|min:1',
+            // Membership plan selection
+            'membership_plan_id' => 'required|exists:membership_plans,id',
         ]);
 
         $memberData = $validated;
-        unset($memberData['plan_name'], $memberData['plan_description'], $memberData['monthly_fee'], $memberData['duration_months']);
+        unset($memberData['membership_plan_id']);
 
         if ($request->hasFile('profile_photo')) {
             $memberData['profile_photo'] = $request->file('profile_photo')->store('members', 'public');
@@ -97,14 +95,24 @@ class MemberController extends Controller
 
         $member = Member::create($memberData);
 
-        // Create membership
-        Membership::create([
+        // Create membership plan assignment
+        $plan = MembershipPlan::findOrFail($validated['membership_plan_id']);
+
+        $startDate = Carbon::parse($validated['joined_date']);
+        $endDate = match (strtolower($plan->duration_type)) {
+            'day', 'days' => $startDate->copy()->addDays((int) $plan->duration_value),
+            'week', 'weeks' => $startDate->copy()->addWeeks((int) $plan->duration_value),
+            'month', 'months' => $startDate->copy()->addMonths((int) $plan->duration_value),
+            'year', 'years' => $startDate->copy()->addYears((int) $plan->duration_value),
+            default => $startDate->copy()->addMonths((int) $plan->duration_value),
+        };
+
+        MemberMembershipPlan::create([
             'member_id' => $member->id,
-            'plan_name' => $validated['plan_name'],
-            'plan_description' => $validated['plan_description'],
-            'monthly_fee' => $validated['monthly_fee'],
-            'start_date' => $validated['joined_date'],
-            'duration_months' => $validated['duration_months'],
+            'membership_plan_id' => $plan->id,
+            'start_date' => $startDate->toDateString(),
+            'end_date' => $endDate->toDateString(),
+            'status' => 'active',
         ]);
 
         return redirect()->route('members.index')->with('success', 'Member created successfully!');
