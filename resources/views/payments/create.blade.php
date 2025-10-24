@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-3xl mx-auto px-4 sm:px-6 md:px-8">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="md:flex md:items-center md:justify-between">
             <div class="flex-1 min-w-0">
                 <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">Record Payment</h2>
@@ -25,7 +25,34 @@
         <form action="{{ route('payments.store') }}" method="POST" class="mt-6">
             @csrf
             
-            <div class="bg-white shadow overflow-hidden sm:rounded-md">
+            @if ($errors->any())
+            <div class="mb-6 bg-red-100 border-2 border-red-500 p-6 rounded-lg shadow-lg">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-bold text-red-800 mb-2">Error: Payment Issue Detected!</h3>
+                        <div class="text-red-700 font-medium">
+                            <ul class="list-disc pl-5 space-y-2">
+                                @foreach ($errors->all() as $error)
+                                <li class="text-red-800 font-semibold">{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <p class="text-sm text-red-600">
+                                <strong>Note:</strong> Please check your input and try again.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+            
+            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                 <div class="px-4 py-5 sm:p-6">
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <!-- Member -->
@@ -59,19 +86,27 @@
                             @enderror
                         </div>
 
-                        <!-- Membership Assignment (auto-selected) -->
+                        <!-- Membership Info -->
                         <div class="sm:col-span-2" id="membership_block">
-                            <label class="block text-sm font-medium text-gray-700">Membership *</label>
-                            <div class="mt-1 w-full rounded-md border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-800">
+                            <label class="block text-sm font-medium text-gray-700">Membership Details</label>
+                            <div class="mt-1 w-full rounded-md border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-800">
                                 @if($selectedMember && $currentAssignment)
-                                    <div class="flex items-center justify-between">
-                                        <div>
-                                            <div class="font-medium">{{ $currentAssignment->membershipPlan->name ?? 'Plan' }}</div>
-                                            <div class="text-xs text-gray-500">Current period: {{ \Carbon\Carbon::parse($currentAssignment->start_date)->format('M d, Y') }} → {{ \Carbon\Carbon::parse($currentAssignment->end_date)->format('M d, Y') }}</div>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <div class="min-w-0">
+                                            <div class="font-medium text-gray-900">{{ $currentAssignment->membershipPlan->name ?? 'Plan' }}</div>
+                                            <div class="text-xs text-gray-500 truncate">Period: {{ \Carbon\Carbon::parse($currentAssignment->start_date)->format('M d, Y') }} → {{ \Carbon\Carbon::parse($currentAssignment->end_date)->format('M d, Y') }}</div>
                                         </div>
-                                        <div class="text-right">
-                                            <div class="text-gray-900 font-semibold">@currency($currentAssignment->membershipPlan->fee ?? 0)</div>
-                                            <div class="text-xs text-gray-500">Duration: {{ $currentAssignment->membershipPlan->duration_value }} {{ ucfirst($currentAssignment->membershipPlan->duration_type) }}</div>
+                                        <div class="min-w-0">
+                                            <div class="text-gray-900 font-semibold">@currency($currentFee)</div>
+                                            <div class="text-xs text-gray-500">Current Fee</div>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-gray-900 font-semibold">@currency($currentDues)</div>
+                                            <div class="text-xs text-gray-500">Previous Dues</div>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="text-green-600 font-semibold">@currency($totalPayable)</div>
+                                            <div class="text-xs text-green-600">Total Due</div>
                                         </div>
                                     </div>
                                     <input type="hidden" name="member_membership_plan_id" value="{{ $currentAssignment->id }}">
@@ -87,7 +122,7 @@
                         <!-- Amount -->
                         <div>
                             <label for="amount" class="block text-sm font-medium text-gray-700">Amount (PKR) *</label>
-                            <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="0" step="0.01" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="0" step="0.01" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
                             @error('amount')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -96,7 +131,7 @@
                         <!-- Payment Date -->
                         <div>
                             <label for="payment_date" class="block text-sm font-medium text-gray-700">Payment Date *</label>
-                            <input type="date" name="payment_date" id="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <input type="date" name="payment_date" id="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
                             @error('payment_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -105,7 +140,7 @@
                         <!-- Due Date -->
                         <div>
                             <label for="due_date" class="block text-sm font-medium text-gray-700">Next Due Date</label>
-                            <input type="date" name="due_date" id="due_date" value="{{ old('due_date') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <input type="date" name="due_date" id="due_date" value="{{ old('due_date') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
                             @error('due_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -131,26 +166,24 @@
                     <!-- Notes -->
                     <div class="mt-6">
                         <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                        <textarea name="notes" id="notes" rows="3" class="mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md" placeholder="Any additional notes...">{{ old('notes') }}</textarea>
+                        <textarea name="notes" id="notes" rows="3" class="mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2" placeholder="Any additional notes...">{{ old('notes') }}</textarea>
                         @error('notes')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
                 </div>
 
-                <!-- Form Actions -->
                 <div class="border-t border-gray-200 px-4 py-4 sm:px-6">
-                    <div class="flex justify-end space-x-3">
-                        <a href="{{ route('payments.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <div class="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                        <a href="{{ route('payments.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Cancel
                         </a>
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                        <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Record Payment
                         </button>
                     </div>
                 </div>
             </div>
-        </form>
     </div>
 </div>
 
@@ -223,5 +256,36 @@
     if (presetAmount && !amountInput.value) {
         amountInput.value = presetAmount;
     }
+
+    // Suggest total payable as amount
+    function suggestAmount() {
+        const totalPayable = {{ $totalPayable ?? 0 }};
+        if (totalPayable > 0 && !amountInput.value) {
+            amountInput.value = totalPayable;
+        }
+    }
+
+    // Suggest when membership block is shown
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                const block = document.getElementById('membership_block');
+                if (block && block.style.display !== 'none') {
+                    setTimeout(suggestAmount, 100);
+                }
+            }
+        });
+    });
+
+    if (document.getElementById('membership_block')) {
+        observer.observe(document.getElementById('membership_block'), { attributes: true });
+    }
+
+    // Also suggest on payment type change if membership
+    paymentType.addEventListener('change', function() {
+        if (this.value === 'membership_fee') {
+            setTimeout(suggestAmount, 100);
+        }
+    });
 </script>
 @endsection

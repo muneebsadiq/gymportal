@@ -57,21 +57,59 @@ class PaymentController extends Controller
         $members = Member::where('status', 'active')->get();
         $selectedMember = null;
         $currentAssignment = null;
+        $currentDues = 0;
+        $currentFee = 0;
+        $totalPayable = 0;
 
         if ($request->member_id) {
             $selectedMember = Member::findOrFail($request->member_id);
-            // Pick active assignment whose window includes today; fallback to most recent
-            $currentAssignment = $selectedMember->memberMembershipPlans()
-                ->with('membershipPlan')
-                ->orderByDesc('end_date')
-                ->get()
-                ->first(function ($a) {
-                    $today = Carbon::today();
-                    return $today->betweenIncluded(Carbon::parse($a->start_date), Carbon::parse($a->end_date));
-                }) ?? $selectedMember->memberMembershipPlans()->with('membershipPlan')->orderByDesc('end_date')->first();
+            
+            // If member_membership_plan_id is provided, use that specific assignment
+            if ($request->member_membership_plan_id) {
+                $currentAssignment = MemberMembershipPlan::where('id', $request->member_membership_plan_id)
+                    ->where('member_id', $selectedMember->id)
+                    ->with('membershipPlan')
+                    ->first();
+            }
+            
+            // Otherwise, pick active assignment whose window includes today; fallback to most recent
+            if (!$currentAssignment) {
+                $currentAssignment = $selectedMember->memberMembershipPlans()
+                    ->with('membershipPlan')
+                    ->orderByDesc('end_date')
+                    ->get()
+                    ->first(function ($a) {
+                        $today = Carbon::today();
+                        return $today->betweenIncluded(Carbon::parse($a->start_date), Carbon::parse($a->end_date));
+                    }) ?? $selectedMember->memberMembershipPlans()->with('membershipPlan')->orderByDesc('end_date')->first();
+            }
+
+            if ($currentAssignment && $currentAssignment->membershipPlan) {
+                $plan = $currentAssignment->membershipPlan;
+                $baseFee = (float) $plan->fee;
+                $durationType = strtolower($plan->duration_type ?? 'month');
+                $durationValue = (int) ($plan->duration_value ?? 1);
+
+                // Calculate the fee per payment period
+                if (($durationType === 'year' || $durationType === 'years') && $durationValue === 1) {
+                    // For yearly plans, assume fee is yearly total, so monthly fee = total / 12
+                    $currentFee = $baseFee / 12;
+                } else {
+                    // For monthly plans or other durations, fee is as stored
+                    $currentFee = $baseFee;
+                }
+
+                // Calculate current dues
+                $currentDues = Payment::where('member_membership_plan_id', $currentAssignment->id)
+                    ->where('payment_type', 'membership_fee')
+                    ->where('due_amount', '>', 0)
+                    ->sum('due_amount');
+
+                $totalPayable = $currentDues + $currentFee;
+            }
         }
         
-        return view('payments.create', compact('members', 'selectedMember', 'currentAssignment'));
+        return view('payments.create', compact('members', 'selectedMember', 'currentAssignment', 'currentDues', 'currentFee', 'totalPayable'));
     }
 
     /**
@@ -83,6 +121,7 @@ class PaymentController extends Controller
             'member_id' => 'required|exists:members,id',
             'member_membership_plan_id' => 'required_if:payment_type,membership_fee|nullable|exists:member_membership_plan,id',
             'amount' => 'required|numeric|min:0',
+            'due_amount' => 'numeric|min:0',
             'payment_date' => 'required|date',
             'due_date' => 'nullable|date',
             'payment_method' => 'required|in:cash,card,bank_transfer,upi,other',
@@ -97,6 +136,7 @@ class PaymentController extends Controller
             $validated['status'] = 'paid';
             $validated['member_membership_plan_id'] = null;
             $validated['membership_plan_id'] = null;
+            $validated['due_amount'] = 0;
             $payment = Payment::create($validated);
 
             return redirect()->route('payments.index')->with('success', 'Payment recorded successfully!');
@@ -104,15 +144,27 @@ class PaymentController extends Controller
         
         DB::beginTransaction();
         try {
-        // Always resolve the current assignment server-side to avoid tampering
-        $assignment = $member->memberMembershipPlans()
-            ->with('membershipPlan')
-            ->orderByDesc('end_date')
-            ->get()
-            ->first(function ($a) {
-                $today = Carbon::today();
-                return $today->betweenIncluded(Carbon::parse($a->start_date), Carbon::parse($a->end_date));
-            }) ?? $member->memberMembershipPlans()->with('membershipPlan')->orderByDesc('end_date')->first();
+        // Resolve the assignment: use provided id if valid, otherwise find current
+        $assignment = null;
+        if (!empty($validated['member_membership_plan_id'])) {
+            $assignment = MemberMembershipPlan::where('id', $validated['member_membership_plan_id'])
+                ->where('member_id', $member->id)
+                ->with('membershipPlan')
+                ->first();
+        }
+        
+        if (!$assignment) {
+            // Pick active assignment whose window includes today; fallback to most recent
+            $assignment = $member->memberMembershipPlans()
+                ->with('membershipPlan')
+                ->orderByDesc('end_date')
+                ->get()
+                ->first(function ($a) {
+                    $today = Carbon::today();
+                    return $today->betweenIncluded(Carbon::parse($a->start_date), Carbon::parse($a->end_date));
+                }) ?? $member->memberMembershipPlans()->with('membershipPlan')->orderByDesc('end_date')->first();
+        }
+        
         if (!$assignment) {
             return back()->withErrors(['member_id' => 'Selected member has no membership assignment.'])->withInput();
         }
@@ -128,83 +180,98 @@ class PaymentController extends Controller
         $validated['membership_plan_id'] = $assignment->membership_plan_id;
 
         $plan = $assignment->membershipPlan;
-        $planFee = (float) ($plan->fee ?? 0);
-        $amount = (float) $validated['amount'];
+        $baseFee = (float) ($plan->fee ?? 0);
+        $durationType = strtolower($plan->duration_type ?? 'month');
+        $durationValue = (int) ($plan->duration_value ?? 1);
 
-        // Fixed window: [current_period_start .. current_end]
-        $durationType = strtolower($plan->duration_type);
-        $durationValue = (int) $plan->duration_value;
-        $currentEnd = Carbon::parse($assignment->end_date);
-        $currentStart = Carbon::parse($assignment->start_date);
-
-        // Sum payments in current window BEFORE this payment
-        $sumBefore = Payment::where('member_membership_plan_id', $assignment->id)
-            ->where('payment_type', 'membership_fee')
-            ->whereBetween('payment_date', [$currentStart->toDateString(), $currentEnd->toDateString()])
-            ->sum('amount');
-
-        // Prepare payment: due_date is the current period end (pre-renewal)
-        if (empty($validated['due_date'])) {
-            $validated['due_date'] = $currentEnd->toDateString();
-        }
-
-        $sumAfter = $sumBefore + $amount;
-        $paymentDate = Carbon::parse($validated['payment_date']);
-
-        // Block new payments inside active period if already fully paid
-        if ($paymentDate->betweenIncluded($currentStart, $currentEnd)) {
-            if ($planFee > 0 && $sumBefore >= $planFee) {
-                return back()->withErrors(['amount' => 'This membership period is already fully paid. No additional payment is allowed in the active period.'])->withInput();
-            }
-            // Allow only remaining amount (partial) within the same period
-            $remaining = max(0, $planFee - $sumBefore);
-            if ($planFee > 0 && $amount > $remaining) {
-                return back()->withErrors(['amount' => 'Amount exceeds remaining balance for this period. Remaining: ' . number_format($remaining, 2)])->withInput();
-            }
-        }
-
-        // Default: do NOT renew, even if >= fee, when within current period
-        $shouldRenewNow = false;
-        if ($paymentDate->greaterThan($currentEnd)) {
-            // Membership expired; accumulate payments since expiry and renew only when threshold reached
-            $sinceExpiryBefore = Payment::where('member_membership_plan_id', $assignment->id)
-                ->where('payment_type', 'membership_fee')
-                ->whereDate('payment_date', '>', $currentEnd->toDateString())
-                ->whereDate('payment_date', '<=', $paymentDate->toDateString())
-                ->sum('amount');
-            $sinceExpiryAfter = $sinceExpiryBefore + $amount;
-            if ($planFee > 0 && $sinceExpiryAfter >= $planFee) {
-                $shouldRenewNow = true;
-            }
-        }
-
-        if ($planFee > 0 && $shouldRenewNow) {
-            // Mark payment and renew exactly one period from previous end
-            $validated['status'] = 'paid';
-            $payment = Payment::create($validated);
-
-            $newEnd = match ($durationType) {
-                'day', 'days' => $currentEnd->copy()->addDays($durationValue),
-                'week', 'weeks' => $currentEnd->copy()->addWeeks($durationValue),
-                'month', 'months' => $currentEnd->copy()->addMonths($durationValue),
-                'year', 'years' => $currentEnd->copy()->addYears($durationValue),
-                default => $currentEnd->copy()->addMonths($durationValue),
-            };
-
-            $assignment->end_date = $newEnd->toDateString();
-            $assignment->status = 'active';
-            $assignment->save();
+        // Calculate the fee per payment period
+        if (($durationType === 'year' || $durationType === 'years') && $durationValue === 1) {
+            // For yearly plans, assume fee is yearly total, so monthly fee = total / 12
+            $planFee = $baseFee / 12;
         } else {
-            // No renewal; set status based on in-window sum for display (partial/paid/excess) but do not advance end_date
-            if ($planFee > 0 && $sumAfter < $planFee) {
-                $validated['status'] = 'partial';
-            } else if ($planFee > 0 && $sumAfter >= $planFee) {
-                // Mark fully paid within the period when cumulative reaches fee
-                $validated['status'] = 'paid';
-            } else {
-                $validated['status'] = 'paid';
+            // For monthly plans or other durations, fee is as stored
+            $planFee = $baseFee;
+        }
+        
+        $amount = (float) $validated['amount'];
+        $paymentDate = Carbon::parse($validated['payment_date']);
+        $paymentMonth = $paymentDate->format('Y-m');
+
+        // Always check for duplicate payments in the same calendar month for membership fees (check across all assignments for the member)
+        $existingPayment = Payment::where('member_id', $member->id)
+            ->where('payment_type', 'membership_fee')
+            ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$paymentMonth])
+            ->first();
+        
+        if ($existingPayment) {
+            return back()->withErrors(['duplicate' => 'A payment has already been recorded for ' . $paymentDate->format('F Y') . '. Multiple payments for the same month are not allowed.'])->withInput();
+        }
+
+        // Additional check for yearly plans: ensure total payments don't exceed yearly fee
+        $planDurationType = strtolower($plan->duration_type ?? 'month');
+        if ($planDurationType === 'year' || $planDurationType === 'years') {
+            $totalPaidForYear = Payment::where('member_membership_plan_id', $assignment->id)
+                ->where('payment_type', 'membership_fee')
+                ->whereBetween('payment_date', [$assignment->start_date, $assignment->end_date])
+                ->sum('amount');
+            
+            $yearlyFee = $baseFee; // Use the stored fee as yearly total
+            if ($totalPaidForYear + $amount > $yearlyFee) {
+                $remaining = $yearlyFee - $totalPaidForYear;
+                return back()->withErrors(['amount' => 'Payment would exceed the yearly fee. Remaining amount for this year: ' . number_format($remaining, 2)])->withInput();
             }
-            $payment = Payment::create($validated);
+        }
+
+        // Calculate previous dues: sum of due_amount from all previous payments for this assignment
+        $previousDues = Payment::where('member_membership_plan_id', $assignment->id)
+            ->where('payment_type', 'membership_fee')
+            ->where('due_amount', '>', 0)
+            ->where('payment_date', '<', $paymentDate->toDateString())
+            ->sum('due_amount');
+
+        $totalDue = $previousDues + $planFee;
+        $remaining = $amount;
+
+        $clearedDues = min($remaining, $previousDues);
+        $remaining -= $clearedDues;
+
+        $paidCurrent = min($remaining, $planFee);
+        $remaining -= $paidCurrent;
+
+        $dueAmount = $planFee - $paidCurrent;
+
+        if ($dueAmount <= 0) {
+            $validated['status'] = 'paid';
+            $validated['due_amount'] = 0;
+        } else {
+            $validated['status'] = 'partial';
+            $validated['due_amount'] = $dueAmount;
+        }
+
+        // Set due_date to end of current month if not set
+        if (empty($validated['due_date'])) {
+            $validated['due_date'] = $paymentDate->copy()->endOfMonth()->toDateString();
+        }
+
+        $payment = Payment::create($validated);
+
+        // Clear previous dues if any were cleared
+        if ($clearedDues > 0) {
+            $previousPayments = Payment::where('member_membership_plan_id', $assignment->id)
+                ->where('payment_type', 'membership_fee')
+                ->where('due_amount', '>', 0)
+                ->where('payment_date', '<', $paymentDate->toDateString())
+                ->orderBy('payment_date')
+                ->get();
+
+            $remainingToClear = $clearedDues;
+            foreach ($previousPayments as $prevPayment) {
+                if ($remainingToClear <= 0) break;
+                $clearAmount = min($remainingToClear, (float) $prevPayment->due_amount);
+                $prevPayment->due_amount = $prevPayment->due_amount - $clearAmount;
+                $prevPayment->save();
+                $remainingToClear -= $clearAmount;
+            }
         }
 
         // Create commission for coach if member has a coach and payment is paid/partial
@@ -228,6 +295,52 @@ class PaymentController extends Controller
         }
 
         DB::commit();
+        
+        // Update membership assignment dates if this is a membership fee payment
+        if ($validated['payment_type'] === 'membership_fee' && $assignment) {
+            // Extend the assignment end date based on the plan duration
+            $plan = $assignment->membershipPlan;
+            if ($plan) {
+                $currentEndDate = Carbon::parse($assignment->end_date);
+                $paymentDate = Carbon::parse($validated['payment_date']);
+                
+                // If payment is made after the current end date, extend the assignment
+                if ($paymentDate->greaterThanOrEqualTo($currentEndDate)) {
+                    $durationType = strtolower($plan->duration_type ?? 'month');
+                    $durationValue = (int) ($plan->duration_value ?? 1);
+                    
+                    // Calculate new end date
+                    $newEndDate = $currentEndDate->copy();
+                    switch ($durationType) {
+                        case 'day':
+                        case 'days':
+                            $newEndDate->addDays($durationValue);
+                            break;
+                        case 'week':
+                        case 'weeks':
+                            $newEndDate->addWeeks($durationValue);
+                            break;
+                        case 'year':
+                        case 'years':
+                            $newEndDate->addYears($durationValue);
+                            break;
+                        case 'month':
+                        case 'months':
+                        default:
+                            $newEndDate->addMonths($durationValue);
+                            break;
+                    }
+                    
+                    // Update the assignment
+                    $assignment->end_date = $newEndDate->toDateString();
+                    $assignment->status = 'active'; // Ensure it's active
+                    $assignment->save();
+                    
+                    \Log::info("Extended membership assignment {$assignment->id} to {$newEndDate->toDateString()} due to payment {$payment->id}");
+                }
+            }
+        }
+        
         return redirect()->route('payments.index')->with('success', 'Payment recorded successfully!');
         } catch (\Exception $e) {
             DB::rollBack();

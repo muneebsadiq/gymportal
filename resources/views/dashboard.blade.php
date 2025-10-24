@@ -18,8 +18,8 @@
         </div>
 
         <!-- Search Section with Tabs -->
-        <div class="mt-6 bg-white shadow-lg rounded-lg p-8">
-            <h3 class="text-2xl font-semibold text-gray-900 mb-6">Quick Search</h3>
+        <div class="mt-8 bg-white shadow-lg rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-6">Quick Search</h3>
             
             <!-- Tabs -->
             <div class="border-b border-gray-200 mb-6">
@@ -37,15 +37,15 @@
             <div id="memberSearchSection">
                 <div class="flex gap-4">
                     <div class="flex-1">
-                        <input type="text" 
-                               id="memberSearchInput" 
-                               placeholder="Enter Member ID (e.g., MEM0001)" 
-                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg py-3 px-4">
+                        <input type="text"
+                               id="memberSearchInput"
+                               placeholder="Enter Member ID (e.g., MEM0001)"
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-base py-3 px-4">
                     </div>
-                    <button type="button" 
-                            onclick="searchMember()" 
-                            class="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="button"
+                            onclick="searchMember()"
+                            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-150">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         Search Member
@@ -58,15 +58,15 @@
             <div id="coachSearchSection" style="display: none;">
                 <div class="flex gap-4">
                     <div class="flex-1">
-                        <input type="text" 
-                               id="coachSearchInput" 
-                               placeholder="Enter Coach ID (e.g., TRN0001)" 
-                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-lg py-3 px-4">
+                        <input type="text"
+                               id="coachSearchInput"
+                               placeholder="Enter Coach ID (e.g., TRN0001)"
+                               class="block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-base py-3 px-4">
                     </div>
-                    <button type="button" 
-                            onclick="searchCoach()" 
-                            class="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="button"
+                            onclick="searchCoach()"
+                            class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         Search Coach
@@ -77,10 +77,10 @@
         </div>
         
         <!-- Key Metrics -->
-        <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <!-- Total Members -->
             <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
+                <div class="p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
@@ -92,16 +92,16 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Total Members</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ $totalMembers }}</dd>
+                                <dd class="text-2xl font-bold text-gray-900">{{ $totalMembers }}</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Active Members -->
             <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
+                <div class="p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-green-500 rounded-md flex items-center justify-center">
@@ -113,16 +113,16 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Active Members</dt>
-                                <dd class="text-lg font-medium text-gray-900">{{ $activeMembers }}</dd>
+                                <dd class="text-2xl font-bold text-gray-900">{{ $activeMembers }}</dd>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Due Fees Alert -->
             <div class="bg-white overflow-hidden shadow rounded-lg cursor-pointer" onclick="scrollToDueFees()">
-                <div class="p-5">
+                <div class="p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 {{ $dueFeesCount > 0 ? 'bg-red-500' : 'bg-gray-400' }} rounded-md flex items-center justify-center">
@@ -134,7 +134,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Due Fees</dt>
-                                <dd class="text-lg font-medium {{ $dueFeesCount > 0 ? 'text-red-600' : 'text-gray-900' }}">
+                                <dd class="text-2xl font-bold {{ $dueFeesCount > 0 ? 'text-red-600' : 'text-gray-900' }}">
                                     {{ $dueFeesCount }}
                                 </dd>
                             </dl>
@@ -142,10 +142,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- This Month Revenue -->
             <div class="bg-white overflow-hidden shadow rounded-lg">
-                <div class="p-5">
+                <div class="p-6">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 bg-indigo-500 rounded-md flex items-center justify-center">
@@ -157,7 +157,7 @@
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">This Month Revenue</dt>
-                                <dd class="text-lg font-medium text-gray-900">@currency($monthlyRevenue)</dd>
+                                <dd class="text-2xl font-bold text-gray-900">@currency($monthlyRevenue)</dd>
                             </dl>
                         </div>
                     </div>
@@ -504,25 +504,25 @@ function showMemberProfilePanel(member) {
         <div id="memberProfilePanel" class="fixed inset-0 z-50 overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
             <div class="absolute inset-0 overflow-hidden">
                 <div class="absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeMemberPanel()"></div>
-                <div class="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
-                    <div class="pointer-events-auto w-screen max-w-2xl">
+                <div class="pointer-events-none fixed inset-y-0 right-0 flex">
+                    <div class="pointer-events-auto w-full sm:w-96 md:w-[28rem] lg:w-[32rem] xl:w-[36rem] 2xl:max-w-2xl">
                         <div class="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
                             <!-- Header -->
-                            <div class="bg-indigo-600 px-4 py-6 sm:px-6">
+                            <div class="bg-indigo-600 px-4 py-4 sm:px-6 sm:py-6">
                                 <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
+                                    <div class="flex items-center min-w-0 flex-1">
                                         ${member.profile_photo ? 
-                                            `<img src="${member.profile_photo}" alt="${member.name}" class="h-12 w-12 rounded-full border-2 border-white">` :
-                                            `<div class="h-12 w-12 rounded-full bg-white flex items-center justify-center">
-                                                <span class="text-xl font-medium text-indigo-600">${member.name.charAt(0)}</span>
+                                            `<img src="${member.profile_photo}" alt="${member.name}" class="h-10 w-10 sm:h-12 sm:w-12 rounded-full border-2 border-white flex-shrink-0">` :
+                                            `<div class="h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-white flex items-center justify-center border-2 border-white flex-shrink-0">
+                                                <span class="text-lg sm:text-xl font-medium text-indigo-600">${member.name.charAt(0)}</span>
                                             </div>`
                                         }
-                                        <div class="ml-3">
-                                            <h2 class="text-xl font-bold text-white">${member.name}</h2>
-                                            <p class="text-sm text-indigo-200">${member.member_id}</p>
+                                        <div class="ml-3 min-w-0 flex-1">
+                                            <h2 class="text-lg sm:text-xl lg:text-xl font-bold text-white truncate">${member.name}</h2>
+                                            <p class="text-sm text-indigo-200 truncate">${member.member_id}</p>
                                         </div>
                                     </div>
-                                    <button type="button" onclick="closeMemberPanel()" class="rounded-md text-indigo-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
+                                    <button type="button" onclick="closeMemberPanel()" class="rounded-md text-indigo-200 hover:text-white focus:outline-none flex-shrink-0 ml-2">
                                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                         </svg>
@@ -533,83 +533,83 @@ function showMemberProfilePanel(member) {
                             <!-- Content -->
                             <div class="relative flex-1 px-4 py-6 sm:px-6">
                                 <!-- Status Badges -->
-                                <div class="mb-6 flex gap-2">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                                <div class="mb-4 sm:mb-6 flex gap-2 flex-wrap">
+                                    <span class="inline-flex items-center px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium ${
                                         member.status === 'active' ? 'bg-green-100 text-green-800' : 
                                         member.status === 'inactive' ? 'bg-gray-100 text-gray-800' : 'bg-red-100 text-red-800'
                                     }">
                                         ${member.status.charAt(0).toUpperCase() + member.status.slice(1)}
                                     </span>
                                     ${member.has_due_fees ? 
-                                        '<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">Due Fees</span>' : 
+                                        '<span class="inline-flex items-center px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium bg-red-100 text-red-800">Due Fees</span>' : 
                                         ''
                                     }
                                 </div>
 
                                 <!-- Personal Information -->
-                                <div class="mb-6">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-3">Personal Information</h3>
-                                    <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Phone</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.phone || 'N/A'}</dd>
+                                <div class="mb-4 sm:mb-6">
+                                    <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3">Personal Information</h3>
+                                    <dl class="grid grid-cols-1 gap-3 sm:gap-4">
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Phone</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900 break-words sm:truncate">${member.phone || 'N/A'}</dd>
                                         </div>
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Email</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.email || 'N/A'}</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Email</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900 break-words sm:truncate">${member.email || 'N/A'}</dd>
                                         </div>
                                         ${member.date_of_birth ? `
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Date of Birth</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.date_of_birth} (${member.age} years)</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Date of Birth</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900">${member.date_of_birth} (${member.age} years)</dd>
                                         </div>` : ''}
                                         ${member.gender ? `
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Gender</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.gender}</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Gender</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900">${member.gender}</dd>
                                         </div>` : ''}
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Joined Date</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.joined_date}</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Joined Date</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900">${member.joined_date}</dd>
                                         </div>
                                         ${member.coach ? `
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Coach</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.coach}</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Coach</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900">${member.coach}</dd>
                                         </div>` : ''}
                                         ${member.address ? `
-                                        <div class="sm:col-span-2">
-                                            <dt class="text-sm font-medium text-gray-500">Address</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.address}</dd>
+                                        <div class="sm:col-span-1">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1">Address</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900 break-words">${member.address}</dd>
                                         </div>` : ''}
                                         ${member.emergency_contact ? `
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Emergency Contact</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.emergency_contact}</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Emergency Contact</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900 break-words sm:truncate">${member.emergency_contact}</dd>
                                         </div>` : ''}
                                         ${member.emergency_phone ? `
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Emergency Phone</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.emergency_phone}</dd>
+                                        <div class="sm:block">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1 sm:mb-0">Emergency Phone</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900 break-words sm:truncate">${member.emergency_phone}</dd>
                                         </div>` : ''}
                                         ${member.medical_conditions ? `
-                                        <div class="sm:col-span-2">
-                                            <dt class="text-sm font-medium text-gray-500">Medical Conditions</dt>
-                                            <dd class="mt-1 text-sm text-gray-900">${member.medical_conditions}</dd>
+                                        <div class="sm:col-span-1">
+                                            <dt class="text-xs sm:text-sm font-medium text-gray-500 mb-1">Medical Conditions</dt>
+                                            <dd class="text-xs sm:text-sm text-gray-900 break-words">${member.medical_conditions}</dd>
                                         </div>` : ''}
                                     </dl>
                                 </div>
 
                                 ${member.active_plan ? `
                                 <!-- Current Membership Plan -->
-                                <div class="mb-6 bg-gray-50 rounded-lg p-4">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-3">Current Membership Plan</h3>
+                                <div class="mb-4 sm:mb-6 bg-gray-50 rounded-lg p-3 sm:p-4">
+                                    <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3">Current Membership Plan</h3>
                                     <div class="space-y-3">
                                         <div>
                                             <p class="text-sm font-medium text-gray-900">${member.active_plan.name}</p>
                                             ${member.active_plan.description ? `<p class="text-xs text-gray-500">${member.active_plan.description}</p>` : ''}
                                         </div>
-                                        <div class="grid grid-cols-2 gap-3">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             <div>
                                                 <dt class="text-xs text-gray-500">Fee</dt>
                                                 <dd class="text-sm font-medium text-gray-900">PKR ${member.active_plan.fee}</dd>
@@ -618,9 +618,9 @@ function showMemberProfilePanel(member) {
                                                 <dt class="text-xs text-gray-500">Duration</dt>
                                                 <dd class="text-sm font-medium text-gray-900">${member.active_plan.duration}</dd>
                                             </div>
-                                            <div>
+                                            <div class="sm:col-span-2">
                                                 <dt class="text-xs text-gray-500">Current Period</dt>
-                                                <dd class="text-sm text-gray-900">${member.active_plan.period_start} → ${member.active_plan.period_end}</dd>
+                                                <dd class="text-xs sm:text-sm text-gray-900 break-words">${member.active_plan.period_start} → ${member.active_plan.period_end}</dd>
                                             </div>
                                             <div>
                                                 <dt class="text-xs text-gray-500">Days Remaining</dt>
@@ -632,57 +632,57 @@ function showMemberProfilePanel(member) {
                                         <div class="flex items-center justify-between pt-2 border-t">
                                             <span class="text-xs text-gray-500">Fee Status</span>
                                             ${member.active_plan.fee_status === 'paid' ? 
-                                                '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>' :
+                                                '<span class="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>' :
                                                 member.active_plan.fee_status === 'overdue' ?
-                                                `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Overdue (PKR ${member.active_plan.fee_amount_due})</span>` :
+                                                `<span class="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Overdue (PKR ${member.active_plan.fee_amount_due})</span>` :
                                                 member.active_plan.fee_status === 'partial' ?
-                                                `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Partial Due (PKR ${member.active_plan.fee_amount_due})</span>` :
-                                                `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Excess (PKR ${member.active_plan.fee_amount_excess})</span>`
+                                                `<span class="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Partial Due (PKR ${member.active_plan.fee_amount_due})</span>` :
+                                                `<span class="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Excess (PKR ${member.active_plan.fee_amount_excess})</span>`
                                             }
                                         </div>
                                     </div>
                                 </div>` : ''}
 
                                 <!-- Payment History -->
-                                <div class="mb-6">
-                                    <h3 class="text-lg font-medium text-gray-900 mb-3">Recent Payment History</h3>
+                                <div class="mb-4 sm:mb-6">
+                                    <h3 class="text-base sm:text-lg font-medium text-gray-900 mb-3">Recent Payment History</h3>
                                     ${member.payments.length > 0 ? `
-                                    <div class="space-y-3">
+                                    <div class="space-y-2 sm:space-y-3">
                                         ${member.payments.map(payment => `
-                                        <div class="flex items-center justify-between py-2 border-b border-gray-200">
-                                            <div class="flex items-center">
-                                                <span class="inline-flex items-center justify-center h-8 w-8 rounded-full ${payment.status === 'paid' ? 'bg-green-100' : 'bg-red-100'}">
-                                                    <svg class="h-4 w-4 ${payment.status === 'paid' ? 'text-green-600' : 'text-red-600'}" fill="currentColor" viewBox="0 0 20 20">
+                                        <div class="flex items-center justify-between py-2 px-2 sm:px-0 border-b border-gray-200">
+                                            <div class="flex items-center min-w-0 flex-1">
+                                                <span class="inline-flex items-center justify-center h-6 w-6 sm:h-8 sm:w-8 rounded-full ${payment.status === 'paid' ? 'bg-green-100' : 'bg-red-100'} flex-shrink-0">
+                                                    <svg class="h-3 w-3 sm:h-4 sm:w-4 ${payment.status === 'paid' ? 'text-green-600' : 'text-red-600'}" fill="currentColor" viewBox="0 0 20 20">
                                                         ${payment.status === 'paid' ? 
                                                             '<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>' :
                                                             '<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>'
                                                         }
                                                     </svg>
                                                 </span>
-                                                <div class="ml-3">
-                                                    <p class="text-sm font-medium text-gray-900">${payment.payment_type}</p>
-                                                    <p class="text-xs text-gray-500">${payment.payment_date} • ${payment.receipt_number}</p>
+                                                <div class="ml-2 sm:ml-3 min-w-0 flex-1">
+                                                    <p class="text-xs sm:text-sm font-medium text-gray-900 truncate">${payment.payment_type}</p>
+                                                    <p class="text-xs text-gray-500 truncate">${payment.payment_date} • ${payment.receipt_number}</p>
                                                 </div>
                                             </div>
-                                            <div class="text-right">
-                                                <p class="text-sm font-medium text-gray-900">PKR ${payment.amount}</p>
+                                            <div class="text-right flex-shrink-0 ml-2">
+                                                <p class="text-xs sm:text-sm font-medium text-gray-900">PKR ${payment.amount}</p>
                                                 <p class="text-xs text-gray-500">${payment.payment_method}</p>
                                             </div>
                                         </div>
                                         `).join('')}
                                     </div>` : 
-                                    '<p class="text-sm text-gray-500 text-center py-4">No payment history</p>'}
+                                    '<p class="text-xs sm:text-sm text-gray-500 text-center py-4">No payment history</p>'}
                                 </div>
 
                                 <!-- Action Buttons -->
-                                <div class="flex gap-3 pt-4 border-t">
-                                    <a href="${member.payment_url}" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
+                                <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 pt-4 border-t">
+                                    <a href="${member.payment_url}" class="flex-1 inline-flex justify-center items-center px-3 py-2 sm:px-4 sm:py-2 border border-transparent text-xs sm:text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700">
                                         Record Payment
                                     </a>
-                                    <a href="${member.edit_url}" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">
+                                    <a href="${member.edit_url}" class="flex-1 inline-flex justify-center items-center px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 text-xs sm:text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">
                                         Edit Member
                                     </a>
-                                    <a href="${member.view_url}" class="flex-1 inline-flex justify-center items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">
+                                    <a href="${member.view_url}" class="flex-1 inline-flex justify-center items-center px-3 py-2 sm:px-4 sm:py-2 border border-gray-300 text-xs sm:text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">
                                         Full Profile
                                     </a>
                                 </div>
@@ -823,103 +823,103 @@ function showCoachSearchModal() {
             <div class="flex items-center justify-center min-h-screen p-4">
                 <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeCoachSearchModal()"></div>
                 
-                <div class="relative bg-white rounded-lg shadow-xl max-w-3xl w-full z-50">
-                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-6">
+                <div class="relative bg-white rounded-lg shadow-xl max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl xl:max-w-4xl w-full z-50">
+                    <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-4 sm:px-6 sm:py-6">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-2xl font-bold text-white">Coach Found</h3>
+                            <h3 class="text-lg sm:text-xl lg:text-2xl font-bold text-white">Coach Found</h3>
                             <button type="button" onclick="closeCoachSearchModal()" class="rounded-md text-white hover:text-gray-200 focus:outline-none">
-                                <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg class="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="bg-white px-6 py-8">
-                        <div class="flex items-start gap-8">
-                            <!-- Large Coach Initial -->
-                            <div class="flex-shrink-0">
-                                <div class="h-48 w-48 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center border-4 border-green-200 shadow-lg">
-                                    <span class="text-8xl font-bold text-white">${coach.name.charAt(0)}</span>
+                    <div class="bg-white px-4 py-6 sm:px-6 sm:py-8">
+                        <div class="flex flex-col lg:flex-row lg:items-start lg:gap-6 xl:gap-8">
+                            <!-- Coach Avatar -->
+                            <div class="flex-shrink-0 mb-4 lg:mb-0">
+                                <div class="h-24 w-24 sm:h-32 sm:w-32 md:h-40 md:w-40 lg:h-48 lg:w-48 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center border-4 border-green-200 shadow-lg mx-auto lg:mx-0">
+                                    <span class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-8xl font-bold text-white">${coach.name.charAt(0)}</span>
                                 </div>
                             </div>
                             
                             <!-- Coach Details -->
                             <div class="flex-1">
-                                <div class="mb-4">
-                                    <h2 class="text-3xl font-bold text-gray-900 mb-2">${coach.name}</h2>
-                                    <p class="text-lg text-gray-600 font-medium mb-3">${coach.coach_id}</p>
-                                    <span class="inline-flex items-center px-4 py-2 rounded-lg text-base font-semibold ${coach.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                                <div class="mb-4 text-center lg:text-left">
+                                    <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 mb-2">${coach.name}</h2>
+                                    <p class="text-base sm:text-lg text-gray-600 font-medium mb-3">${coach.coach_id}</p>
+                                    <span class="inline-flex items-center px-3 py-1 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base font-semibold ${coach.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
                                         ${coach.status === 'active' ? '✓ Active' : 'Inactive'}
                                     </span>
                                 </div>
                                 
-                                <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
                                     ${coach.phone ? `
-                                    <div class="bg-gray-50 p-4 rounded-lg">
-                                        <p class="text-sm text-gray-500 mb-1">Phone</p>
-                                        <p class="text-base font-semibold text-gray-900">${coach.phone}</p>
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Phone</p>
+                                        <p class="text-sm sm:text-base font-semibold text-gray-900">${coach.phone}</p>
                                     </div>` : ''}
                                     
                                     ${coach.email ? `
-                                    <div class="bg-gray-50 p-4 rounded-lg">
-                                        <p class="text-sm text-gray-500 mb-1">Email</p>
-                                        <p class="text-base font-semibold text-gray-900">${coach.email}</p>
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg">
+                                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Email</p>
+                                        <p class="text-sm sm:text-base font-semibold text-gray-900">${coach.email}</p>
                                     </div>` : ''}
                                     
-                                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                                        <p class="text-sm text-green-700 mb-1">Total Members</p>
-                                        <p class="text-lg font-bold text-green-900">${coach.total_members}</p>
+                                    <div class="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
+                                        <p class="text-xs sm:text-sm text-green-700 mb-1">Total Members</p>
+                                        <p class="text-base sm:text-lg font-bold text-green-900">${coach.total_members}</p>
                                     </div>
                                     
-                                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
-                                        <p class="text-sm text-green-700 mb-1">Active Members</p>
-                                        <p class="text-lg font-bold text-green-900">${coach.active_members}</p>
+                                    <div class="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
+                                        <p class="text-xs sm:text-sm text-green-700 mb-1">Active Members</p>
+                                        <p class="text-base sm:text-lg font-bold text-green-900">${coach.active_members}</p>
                                     </div>
                                     
                                     ${coach.specialization ? `
-                                    <div class="bg-gray-50 p-4 rounded-lg col-span-2">
-                                        <p class="text-sm text-gray-500 mb-1">Specialization</p>
-                                        <p class="text-base font-semibold text-gray-900">${coach.specialization}</p>
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg sm:col-span-2">
+                                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Specialization</p>
+                                        <p class="text-sm sm:text-base font-semibold text-gray-900">${coach.specialization}</p>
                                     </div>` : ''}
                                     
-                                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-                                        <p class="text-sm text-indigo-700 mb-1">Monthly Salary</p>
-                                        <p class="text-lg font-bold text-indigo-900">PKR ${coach.salary}</p>
+                                    <div class="bg-indigo-50 p-3 sm:p-4 rounded-lg border border-indigo-200">
+                                        <p class="text-xs sm:text-sm text-indigo-700 mb-1">Monthly Salary</p>
+                                        <p class="text-base sm:text-lg font-bold text-indigo-900">PKR ${coach.salary}</p>
                                     </div>
                                     
-                                    <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-                                        <p class="text-sm text-indigo-700 mb-1">Commission Rate</p>
-                                        <p class="text-lg font-bold text-indigo-900">${coach.commission_rate}%</p>
+                                    <div class="bg-indigo-50 p-3 sm:p-4 rounded-lg border border-indigo-200">
+                                        <p class="text-xs sm:text-sm text-indigo-700 mb-1">Commission Rate</p>
+                                        <p class="text-base sm:text-lg font-bold text-indigo-900">${coach.commission_rate}%</p>
                                     </div>
                                     
-                                    <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                                        <p class="text-sm text-yellow-700 mb-1">Total Commission</p>
-                                        <p class="text-lg font-bold text-yellow-900">PKR ${coach.total_commission}</p>
+                                    <div class="bg-yellow-50 p-3 sm:p-4 rounded-lg border border-yellow-200">
+                                        <p class="text-xs sm:text-sm text-yellow-700 mb-1">Total Commission</p>
+                                        <p class="text-base sm:text-lg font-bold text-yellow-900">PKR ${coach.total_commission}</p>
                                     </div>
                                     
-                                    <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-                                        <p class="text-sm text-yellow-700 mb-1">This Month</p>
-                                        <p class="text-lg font-bold text-yellow-900">PKR ${coach.monthly_commission}</p>
+                                    <div class="bg-yellow-50 p-3 sm:p-4 rounded-lg border border-yellow-200">
+                                        <p class="text-xs sm:text-sm text-yellow-700 mb-1">This Month</p>
+                                        <p class="text-base sm:text-lg font-bold text-yellow-900">PKR ${coach.monthly_commission}</p>
                                     </div>
                                     
-                                    <div class="bg-gray-50 p-4 rounded-lg col-span-2">
-                                        <p class="text-sm text-gray-500 mb-1">Join Date</p>
-                                        <p class="text-base font-semibold text-gray-900">${coach.join_date}</p>
+                                    <div class="bg-gray-50 p-3 sm:p-4 rounded-lg sm:col-span-2">
+                                        <p class="text-xs sm:text-sm text-gray-500 mb-1">Join Date</p>
+                                        <p class="text-sm sm:text-base font-semibold text-gray-900">${coach.join_date}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="bg-gray-50 px-6 py-4 flex gap-3 justify-end">
-                        <button type="button" onclick="closeCoachSearchModal()" class="px-6 py-3 border border-gray-300 rounded-lg text-base font-semibold text-gray-700 bg-white hover:bg-gray-50">
+                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:py-4 flex flex-col sm:flex-row gap-3 sm:gap-3 sm:justify-end">
+                        <button type="button" onclick="closeCoachSearchModal()" class="px-4 py-2 sm:px-6 sm:py-3 border border-gray-300 rounded-lg text-sm sm:text-base font-semibold text-gray-700 bg-white hover:bg-gray-50 order-2 sm:order-1">
                             Close
                         </button>
-                        <a href="${coach.salary_url}" class="px-6 py-3 border border-transparent rounded-lg text-base font-semibold text-white bg-yellow-600 hover:bg-yellow-700">
+                        <a href="${coach.salary_url}" class="px-4 py-2 sm:px-6 sm:py-3 border border-transparent rounded-lg text-sm sm:text-base font-semibold text-white bg-yellow-600 hover:bg-yellow-700 order-1 sm:order-2">
                             Salary History
                         </a>
-                        <a href="${coach.view_url}" class="px-6 py-3 border border-transparent rounded-lg text-base font-semibold text-white bg-green-600 hover:bg-green-700">
+                        <a href="${coach.view_url}" class="px-4 py-2 sm:px-6 sm:py-3 border border-transparent rounded-lg text-sm sm:text-base font-semibold text-white bg-green-600 hover:bg-green-700 order-1 sm:order-2">
                             View Full Profile
                         </a>
                     </div>
