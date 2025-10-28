@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <div class="max-w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-6xl mx-auto">
         <!-- Header -->
         <div class="md:flex md:items-center md:justify-between mb-6">
             <div class="flex-1 min-w-0">
@@ -24,7 +24,7 @@
         <!-- Filters -->
         <div class="bg-white shadow-sm rounded-lg p-6 mb-6 border border-gray-200">
             <form method="GET" action="{{ route('reports.expenses') }}">
-                <div class="grid grid-cols-1 gap-4 sm:grid-cols-5">
+                <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4">
                     <div>
                         <label for="date_from" class="block text-sm font-medium text-gray-700">Date From</label>
                         <input type="date" name="date_from" id="date_from" value="{{ request('date_from') }}" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -81,24 +81,24 @@
         <div class="bg-white shadow-sm overflow-hidden sm:rounded-lg border border-gray-200">
             @if($expenses->count() > 0)
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
+                <table class="w-full divide-y divide-gray-200 table-fixed">
                     <thead class="bg-gray-50">
                         <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coach</th>
-                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Description</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment Method</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coach</th>
+                            <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @foreach($expenses as $expense)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 truncate truncate">
                                 {{ $expense->expense_date->format('M d, Y') }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-4 py-4 whitespace-nowrap">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
                                     {{ $expense->category === 'salary' ? 'bg-purple-100 text-purple-800' : 
                                        ($expense->category === 'rent' ? 'bg-blue-100 text-blue-800' : 
@@ -107,16 +107,16 @@
                                     {{ ucwords(str_replace('_', ' ', $expense->category)) }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">
+                            <td class="px-4 py-4 text-sm text-gray-900 truncate">
                                 {{ $expense->description ?: '—' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 truncate truncate">
                                 {{ ucwords(str_replace('_', ' ', $expense->payment_method)) }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 truncate truncate">
                                 {{ $expense->coach ? $expense->coach->name : '—' }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-semibold text-gray-900">
+                            <td class="px-4 py-4 whitespace-nowrap text-right text-sm font-semibold text-gray-900">
                                 PKR {{ number_format($expense->amount, 2) }}
                             </td>
                         </tr>
@@ -124,8 +124,8 @@
                     </tbody>
                     <tfoot class="bg-gray-50">
                         <tr>
-                            <td colspan="5" class="px-6 py-4 text-right text-sm font-bold text-gray-900">Total:</td>
-                            <td class="px-6 py-4 text-right text-sm font-bold text-red-600">PKR {{ number_format($totalAmount, 2) }}</td>
+                            <td colspan="5" class="px-4 py-4 text-right text-sm font-bold text-gray-900">Total:</td>
+                            <td class="px-4 py-4 text-right text-sm font-bold text-red-600">PKR {{ number_format($totalAmount, 2) }}</td>
                         </tr>
                     </tfoot>
                 </table>

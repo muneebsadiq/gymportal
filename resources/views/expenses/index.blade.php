@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="py-6 overflow-x-hidden">
-    <div class="max-w-full sm:max-w-4xl md:max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+    <div class="max-w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-none mx-auto ">
         <!-- Header -->
         <div class="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div class="flex-1 min-w-0">
@@ -92,22 +92,22 @@
                 <!-- Desktop Table -->
                 <div class="hidden md:block">
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 table-fixed md:table-auto">
+                        <table class="w-full divide-y divide-gray-200 table-fixed">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40 md:px-4 md:w-auto">Expense</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24 md:px-4 md:w-auto">Amount</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 md:px-4 md:w-auto">Date</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24 md:px-4 md:w-auto">Category</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32 md:px-4 md:w-auto">Vendor</th>
-                                    <th class="px-2 py-3 w-24 md:px-4 md:w-auto"/>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40 md:px-4 md:w-1/6">Expense</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 md:px-4 md:w-1/6">Amount</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 md:px-4 md:w-1/6">Date</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 md:px-4 md:w-1/6">Category</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 md:px-4 md:w-1/6">Vendor</th>
+                                    <th class="px-2 py-3 w-1/6"/>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($expenses as $expense)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-2 py-4 whitespace-nowrap md:px-4">
-                                        <div class="text-xs md:text-sm font-medium text-gray-900 truncate max-w-36">{{ $expense->title }}</div>
+                                        <div class="text-xs md:text-sm font-medium text-gray-900 max-w-36">{{ $expense->title }}</div>
                                         <div class="text-xs text-gray-500">{{ $expense->expense_number }}</div>
                                     </td>
                                     <td class="px-2 py-4 whitespace-nowrap md:px-4">
@@ -122,7 +122,7 @@
                                         </span>
                                     </td>
                                     <td class="px-2 py-4 whitespace-nowrap md:px-4">
-                                        <div class="text-xs md:text-sm text-gray-900 truncate max-w-28">{{ $expense->vendor_name ?: 'N/A' }}</div>
+                                        <div class="text-xs md:text-sm text-gray-900 max-w-28">{{ $expense->vendor_name ?: 'N/A' }}</div>
                                     </td>
                                     <td class="px-2 py-4 whitespace-nowrap text-right text-xs md:text-sm font-medium md:px-4">
                                         <div class="flex justify-end gap-1">
@@ -159,7 +159,7 @@
                                         </div>
                                         <div class="min-w-0 flex-1">
                                             <p class="text-sm font-medium text-gray-900">{{ $expense->title }}</p>
-                                            <p class="text-sm text-gray-500">{{ $expense->expense_number }} • {{ ucwords(str_replace('_', ' ', $expense->category)) }}</p>
+                                            <p class="text-sm text-gray-500 truncate">{{ $expense->expense_number }} • {{ ucwords(str_replace('_', ' ', $expense->category)) }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -172,7 +172,7 @@
                             <div class="mt-2 grid grid-cols-2 gap-2 text-xs">
                                 <div>
                                     <p class="text-gray-500">Vendor</p>
-                                    <p class="font-medium">{{ $expense->vendor_name ?: 'N/A' }}</p>
+                                    <p class="font-medium truncate">{{ $expense->vendor_name ?: 'N/A' }}</p>
                                 </div>
                                 <div class="text-right">
                                     <div class="mt-3 flex space-x-2">
