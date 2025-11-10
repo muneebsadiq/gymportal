@@ -165,7 +165,7 @@
                                             data-duration-type="{{ $plan->duration_type }}"
                                             data-description="{{ $plan->description }}"
                                             {{ old('membership_plan_id') == $plan->id ? 'selected' : '' }}>
-                                        {{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, @currency($plan->fee)))
+                                        {{ $plan->name }} ({{ $plan->duration_value }} {{ ucfirst($plan->duration_type) }}, PKR {{ number_format($plan->fee, 2) }})
                                     </option>
                                 @endforeach
                             </select>
@@ -191,7 +191,6 @@
                             <label for="coach_id" class="block text-sm font-medium text-gray-700">Assign Coach</label>
                             <select name="coach_id" id="coach_id" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option value="">No Coach</option>
-                                @php($coaches = \App\Models\Coach::orderBy('name')->get())
                                 @foreach($coaches as $coach)
                                     <option value="{{ $coach->id }}" {{ old('coach_id') == $coach->id ? 'selected' : '' }}>{{ $coach->name }} {{ $coach->specialization ? '(' . $coach->specialization . ')' : '' }}</option>
                                 @endforeach

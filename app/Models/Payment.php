@@ -9,13 +9,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Payment extends Model
 {
     protected $fillable = [
-        'receipt_number', 'member_id', 'membership_plan_id', 'member_membership_plan_id', 'amount',
+        'receipt_number', 'member_id', 'membership_plan_id', 'member_membership_plan_id', 'amount', 'due_amount',
         'payment_date', 'due_date', 'payment_method', 'payment_type',
         'status', 'notes'
     ];
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'due_amount' => 'decimal:2',
         'payment_date' => 'date',
         'due_date' => 'date',
     ];

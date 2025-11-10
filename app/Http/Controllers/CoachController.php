@@ -19,7 +19,8 @@ class CoachController extends Controller
             $query->where(function ($q) use ($request) {
                 $q->where('name', 'LIKE', '%'.$request->search.'%')
                   ->orWhere('phone', 'LIKE', '%'.$request->search.'%')
-                  ->orWhere('email', 'LIKE', '%'.$request->search.'%');
+                  ->orWhere('email', 'LIKE', '%'.$request->search.'%')
+                  ->orWhere('coach_id', 'LIKE', '%'.$request->search.'%');
             });
         }
         if ($request->status) {
