@@ -123,6 +123,18 @@ class Member extends Model
         return $assignment ? $assignment->membershipPlan : null;
     }
 
+    public function hasPaymentDue()
+    {
+        // Check if member has any pending or partial payments that are overdue
+        return $this->payments()
+            ->whereIn('status', ['pending', 'partial'])
+            ->where(function ($q) {
+                $q->where('due_date', '<', Carbon::now())
+                  ->orWhereNull('due_date');
+            })
+            ->exists();
+    }
+
     public function hasPartialPayments()
     {
         // Check if member has any partial payments (not fully paid fees)
