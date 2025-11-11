@@ -219,7 +219,7 @@
         @endif
 
         <!-- Pay Salary Form -->
-        @if($coach->salary)
+        @if($coach->salary && $coach->join_date && $coach->join_date->diffInDays(now()) >= 30)
         <div class="mt-6 bg-white shadow overflow-hidden sm:rounded-lg">
             <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
                 <div class="flex items-center justify-between">
@@ -368,6 +368,28 @@
                 }
             </script>
             @endif
+        </div>
+        @elseif($coach->salary && $coach->join_date && $coach->join_date->diffInDays(now()) < 30)
+        <!-- Salary Not Yet Due Message -->
+        <div class="mt-6 bg-blue-50 border-l-4 border-blue-400 p-6 rounded-lg">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">Salary Not Yet Due</h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <p>This coach's salary will become due after 30 days from their joining date.</p>
+                        <p class="mt-2">
+                            <strong>Join Date:</strong> {{ $coach->join_date->format('M d, Y') }}<br>
+                            <strong>Days Worked:</strong> {{ $coach->join_date->diffInDays(now()) }} days<br>
+                            <strong>Salary Due From:</strong> {{ $coach->join_date->addDays(30)->format('M d, Y') }}
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
         @endif
 

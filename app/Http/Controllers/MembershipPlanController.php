@@ -34,7 +34,8 @@ class MembershipPlanController extends Controller
 
     public function edit(MembershipPlan $plan)
     {
-        return view('membership_plans.edit', compact('plan'));
+        $membershipPlan = $plan;
+        return view('membership_plans.edit', compact('membershipPlan'));
     }
 
     public function update(Request $request, MembershipPlan $plan)

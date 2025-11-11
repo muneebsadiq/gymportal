@@ -95,10 +95,12 @@
                                     <td class="px-2 py-4 whitespace-nowrap md:px-4">
                                         <div class="flex flex-col space-y-0.5">
                                             <span class="inline-flex items-center px-1.5 py-0.5 md:px-2.5 rounded-full text-xs font-medium {{ $coach->status==='active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">{{ ucfirst($coach->status) }}</span>
-                                            @if($coach->salary && $coach->expenses->isEmpty())
-                                                <span class="inline-flex items-center px-1.5 py-0.5 md:px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Due</span>
-                                            @elseif($coach->salary && $coach->expenses->isNotEmpty())
-                                                <span class="inline-flex items-center px-1.5 py-0.5 md:px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>
+                                            @if($coach->salary && $coach->join_date && $coach->join_date->diffInDays(now()) >= 30)
+                                                @if($coach->expenses->isEmpty())
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 md:px-2.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Due</span>
+                                                @else
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 md:px-2.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>
+                                                @endif
                                             @endif
                                         </div>
                                     </td>
@@ -143,10 +145,12 @@
                                 </div>
                                 <div class="flex flex-col items-end space-y-0.5">
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $coach->status==='active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">{{ ucfirst($coach->status) }}</span>
-                                    @if($coach->salary && $coach->expenses->isEmpty())
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Due</span>
-                                    @elseif($coach->salary && $coach->expenses->isNotEmpty())
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>
+                                    @if($coach->salary && $coach->join_date && $coach->join_date->diffInDays(now()) >= 30)
+                                        @if($coach->expenses->isEmpty())
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Due</span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Paid</span>
+                                        @endif
                                     @endif
                                 </div>
                             </div>
