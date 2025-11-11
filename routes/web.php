@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::post('member_membership_plans', [\App\Http\Controllers\MemberMembershipPlanController::class, 'store'])->name('member_membership_plans.store');
     Route::get('member_membership_plans/{memberMembershipPlan}/edit', [\App\Http\Controllers\MemberMembershipPlanController::class, 'edit'])->name('member_membership_plans.edit');
     Route::put('member_membership_plans/{memberMembershipPlan}', [\App\Http\Controllers\MemberMembershipPlanController::class, 'update'])->name('member_membership_plans.update');
+    Route::delete('member_membership_plans/{memberMembershipPlan}', [\App\Http\Controllers\MemberMembershipPlanController::class, 'destroy'])->name('member_membership_plans.destroy');
     // Membership Plans CRUD (admin only)
     Route::get('membership_plans', [\App\Http\Controllers\MembershipPlanController::class, 'index'])->name('membership_plans.index');
     Route::get('membership_plans/create', [\App\Http\Controllers\MembershipPlanController::class, 'create'])->name('membership_plans.create');

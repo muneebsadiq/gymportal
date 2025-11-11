@@ -92,23 +92,23 @@
                 <!-- Desktop Table -->
                 <div class="hidden md:block">
                     <div class="overflow-x-auto">
-                        <table class="w-full divide-y divide-gray-200 table-fixed">
+                        <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40 md:px-4 md:w-1/6">Expense</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 md:px-4 md:w-1/6">Amount</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20 md:px-4 md:w-1/6">Date</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 md:px-4 md:w-1/6">Category</th>
-                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6 md:px-4 md:w-1/6">Vendor</th>
-                                    <th class="px-2 py-3 w-1/6"/>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-4" style="width: 20%;">Expense</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-4" style="width: 12%;">Amount</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-4" style="width: 12%;">Date</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-4" style="width: 15%;">Category</th>
+                                    <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-4" style="width: 15%;">Vendor</th>
+                                    <th class="px-2 py-3 md:px-4" style="width: 26%;"/>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($expenses as $expense)
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-2 py-4 whitespace-nowrap md:px-4">
-                                        <div class="text-xs md:text-sm font-medium text-gray-900 max-w-36">{{ $expense->title }}</div>
-                                        <div class="text-xs text-gray-500">{{ $expense->expense_number }}</div>
+                                    <td class="px-2 py-4 md:px-4">
+                                        <div class="text-xs md:text-sm font-medium text-gray-900 break-words">{{ $expense->title }}</div>
+                                        <div class="text-xs text-gray-500 whitespace-nowrap">{{ $expense->expense_number }}</div>
                                     </td>
                                     <td class="px-2 py-4 whitespace-nowrap md:px-4">
                                         <div class="text-xs md:text-sm font-medium text-gray-900">@currency($expense->amount)</div>
@@ -121,8 +121,8 @@
                                             {{ ucwords(str_replace('_', ' ', $expense->category)) }}
                                         </span>
                                     </td>
-                                    <td class="px-2 py-4 whitespace-nowrap md:px-4">
-                                        <div class="text-xs md:text-sm text-gray-900 max-w-28">{{ $expense->vendor_name ?: 'N/A' }}</div>
+                                    <td class="px-2 py-4 md:px-4">
+                                        <div class="text-xs md:text-sm text-gray-900 break-words">{{ $expense->vendor_name ?: 'N/A' }}</div>
                                     </td>
                                     <td class="px-2 py-4 whitespace-nowrap text-right text-xs md:text-sm font-medium md:px-4">
                                         <div class="flex justify-end gap-1">
