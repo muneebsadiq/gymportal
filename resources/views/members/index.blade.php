@@ -48,10 +48,10 @@
                     </div>
 
                     <div>
-                        <label for="due_fees" class="block text-sm font-medium text-gray-700">Fee Status</label>
-                        <select name="due_fees" id="due_fees" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        <label for="partial_payments" class="block text-sm font-medium text-gray-700">Partial Payments</label>
+                        <select name="partial_payments" id="partial_payments" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                             <option value="">All Members</option>
-                            <option value="1" {{ request('due_fees') === '1' ? 'selected' : '' }}>Due Fees Only</option>
+                            <option value="1" {{ request('partial_payments') === '1' ? 'selected' : '' }}>Has Partial Payments</option>
                         </select>
                     </div>
 
@@ -100,6 +100,11 @@
                                         Payment Due
                                     </span>
                                     @endif
+                                    @if($member->hasPartialPayments())
+                                    <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Partial Payment
+                                    </span>
+                                    @endif
                                     @if($member->hasDueFees())
                                     <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         Due Fees
@@ -108,6 +113,9 @@
                                 </div>
                                 <div class="flex items-center text-sm text-gray-500">
                                     <p>{{ $member->member_id }} • {{ $member->phone }}</p>
+                                    @if($member->hasPartialPayments())
+                                    <p class="ml-2 text-yellow-600 font-medium">• Partial Payment: Yes</p>
+                                    @endif
                                     @if($member->active_plan)
                                     <p class="ml-2">• {{ $member->active_plan->name }}</p>
                                     @elseif($member->activeMembership())
