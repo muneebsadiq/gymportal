@@ -48,6 +48,13 @@ class MemberController extends Controller
             $query->withDueFees();
         }
 
+        // Filter for members with partial payments
+        if ($request->has('partial_payments') && $request->partial_payments == '1') {
+            $query->whereHas('payments', function ($q) {
+                $q->where('status', 'partial');
+            });
+        }
+
         $members = $query->latest()->paginate(20);
         
         return view('members.index', compact('members'));
@@ -282,6 +289,7 @@ class MemberController extends Controller
                 'joined_date' => $member->joined_date->format('M d, Y'),
                 'coach' => $member->coach ? $member->coach->name : null,
                 'has_due_fees' => $member->hasDueFees(),
+                'has_partial_payments' => $member->hasPartialPayments(),
                 'next_due_date' => $member->next_due_date ? Carbon::parse($member->next_due_date)->format('M d, Y') : null,
                 'active_plan' => $this->getActivePlanData($member),
                 'payments' => $member->payments->map(function($payment) {
@@ -340,6 +348,7 @@ class MemberController extends Controller
             'joined_date' => $member->joined_date->format('M d, Y'),
             'coach' => $member->coach ? $member->coach->name : null,
             'has_due_fees' => $member->hasDueFees(),
+            'has_partial_payments' => $member->hasPartialPayments(),
             'next_due_date' => $member->next_due_date ? Carbon::parse($member->next_due_date)->format('M d, Y') : null,
             'active_plan' => $this->getActivePlanData($member),
             'payments' => $member->payments->map(function($payment) {

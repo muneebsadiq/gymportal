@@ -134,4 +134,12 @@ class Member extends Model
             })
             ->exists();
     }
+
+    public function hasPartialPayments()
+    {
+        // Check if member has any partial payments (not fully paid fees)
+        return $this->payments()
+            ->where('status', 'partial')
+            ->exists();
+    }
 }
