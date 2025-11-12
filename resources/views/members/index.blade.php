@@ -114,7 +114,7 @@
                                 <div class="flex items-center text-sm text-gray-500">
                                     <p>{{ $member->member_id }} • {{ $member->phone }}</p>
                                     @if($member->hasPartialPayments())
-                                    <p class="ml-2 text-yellow-600 font-medium">• Partial Payment: Yes</p>
+                                    <p class="ml-2 text-yellow-600 font-medium">• Remaining Due: {{ number_format($member->getPartialRemainingDue(), 2) }}</p>
                                     @endif
                                     @if($member->active_plan)
                                     <p class="ml-2">• {{ $member->active_plan->name }}</p>

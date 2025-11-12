@@ -137,9 +137,28 @@ class Member extends Model
 
     public function hasPartialPayments()
     {
-        // Check if member has any partial payments (not fully paid fees)
+        // Check if member has any partial payments in the current month (not fully paid fees)
+        $currentMonth = Carbon::now()->format('Y-m');
         return $this->payments()
             ->where('status', 'partial')
+            ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$currentMonth])
             ->exists();
+    }
+
+    public function getPartialRemainingDue()
+    {
+        // Calculate total remaining due for partial payments in the current month
+        $currentMonth = Carbon::now()->format('Y-m');
+        $partialPayments = $this->payments()
+            ->where('status', 'partial')
+            ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$currentMonth])
+            ->get();
+
+        $totalRemaining = 0.0;
+        foreach ($partialPayments as $payment) {
+            $totalRemaining += (float) $payment->due_amount;
+        }
+
+        return $totalRemaining;
     }
 }

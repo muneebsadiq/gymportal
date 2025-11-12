@@ -52,13 +52,47 @@
             </div>
             @endif
             
-            <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            @if ($fullMessage)
+            <div class="mb-6 bg-blue-100 border-2 border-blue-500 p-6 rounded-lg shadow-lg">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-bold text-blue-800 mb-2">Payment Status</h3>
+                        <div class="text-blue-700 font-medium">
+                            <p>{{ $fullMessage }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            @if ($partialMessage)
+            <div class="mb-6 bg-yellow-100 border-2 border-yellow-500 p-6 rounded-lg shadow-lg">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 18.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <h3 class="text-lg font-bold text-yellow-800 mb-2">Partial Payment Detected</h3>
+                        <div class="text-yellow-700 font-medium">
+                            <p>{{ $partialMessage }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
                 <div class="px-4 py-5 sm:p-6">
                     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                         <!-- Member -->
                         <div class="sm:col-span-2">
                             <label for="member_id" class="block text-sm font-medium text-gray-700">Member *</label>
-                            <select name="member_id" id="member_id" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select name="member_id" id="member_id" required {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option value="">Select Member</option>
                                 @foreach($members as $member)
                                 <option value="{{ $member->id }}" {{ ($selectedMember && $selectedMember->id === $member->id) || old('member_id') == $member->id ? 'selected' : '' }}>
@@ -74,7 +108,7 @@
                         <!-- Payment Type -->
                         <div class="sm:col-span-2">
                             <label for="payment_type" class="block text-sm font-medium text-gray-700">Payment Type *</label>
-                            <select name="payment_type" id="payment_type" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select name="payment_type" id="payment_type" required {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option value="">Select Type</option>
                                 <option value="membership_fee" {{ old('payment_type') === 'membership_fee' ? 'selected' : '' }}>Membership Fee</option>
                                 <option value="admission_fee" {{ old('payment_type') === 'admission_fee' ? 'selected' : '' }}>Admission Fee</option>
@@ -122,7 +156,7 @@
                         <!-- Amount -->
                         <div>
                             <label for="amount" class="block text-sm font-medium text-gray-700">Amount (PKR) *</label>
-                            <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="0" step="0.01" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                            <input type="number" name="amount" id="amount" value="{{ old('amount') }}" required min="0" step="0.01" {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
                             @error('amount')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -131,7 +165,7 @@
                         <!-- Payment Date -->
                         <div>
                             <label for="payment_date" class="block text-sm font-medium text-gray-700">Payment Date *</label>
-                            <input type="date" name="payment_date" id="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" required class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                            <input type="date" name="payment_date" id="payment_date" value="{{ old('payment_date', date('Y-m-d')) }}" required {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
                             @error('payment_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -140,7 +174,7 @@
                         <!-- Due Date -->
                         <div>
                             <label for="due_date" class="block text-sm font-medium text-gray-700">Next Due Date</label>
-                            <input type="date" name="due_date" id="due_date" value="{{ old('due_date') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
+                            <input type="date" name="due_date" id="due_date" value="{{ old('due_date') }}" {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md px-3 py-2">
                             @error('due_date')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -149,7 +183,7 @@
                         <!-- Payment Method -->
                         <div>
                             <label for="payment_method" class="block text-sm font-medium text-gray-700">Payment Method *</label>
-                            <select name="payment_method" id="payment_method" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <select name="payment_method" id="payment_method" required {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                                 <option value="">Select Method</option>
                                 <option value="cash" {{ old('payment_method') === 'cash' ? 'selected' : '' }}>Cash</option>
                                 <option value="card" {{ old('payment_method') === 'card' ? 'selected' : '' }}>Card</option>
@@ -166,7 +200,7 @@
                     <!-- Notes -->
                     <div class="mt-6">
                         <label for="notes" class="block text-sm font-medium text-gray-700">Notes</label>
-                        <textarea name="notes" id="notes" rows="3" class="mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2" placeholder="Any additional notes...">{{ old('notes') }}</textarea>
+                        <textarea name="notes" id="notes" rows="3" {{ $allowPayment ?? true ? '' : 'disabled' }} class="mt-1 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md px-3 py-2" placeholder="Any additional notes...">{{ old('notes') }}</textarea>
                         @error('notes')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -178,9 +212,15 @@
                         <a href="{{ route('payments.index') }}" class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Cancel
                         </a>
+                        @if($allowPayment ?? true)
                         <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                             Record Payment
                         </button>
+                        @else
+                        <button type="submit" disabled class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-400 cursor-not-allowed">
+                            Record Payment
+                        </button>
+                        @endif
                     </div>
                 </div>
             </div>

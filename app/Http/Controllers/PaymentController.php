@@ -60,6 +60,9 @@ class PaymentController extends Controller
         $currentDues = 0;
         $currentFee = 0;
         $totalPayable = 0;
+        $partialMessage = null;
+        $fullMessage = null;
+        $allowPayment = true;
 
         if ($request->member_id) {
             $selectedMember = Member::findOrFail($request->member_id);
@@ -99,17 +102,37 @@ class PaymentController extends Controller
                     $currentFee = $baseFee;
                 }
 
-                // Calculate current dues
+                // Calculate current dues from previous months
                 $currentDues = Payment::where('member_membership_plan_id', $currentAssignment->id)
                     ->where('payment_type', 'membership_fee')
                     ->where('due_amount', '>', 0)
                     ->sum('due_amount');
 
-                $totalPayable = $currentDues + $currentFee;
+                // Calculate if there are partial payments for the current month for this assignment
+                $currentMonth = Carbon::now()->format('Y-m');
+                $totalPaidThisMonth = Payment::where('member_membership_plan_id', $currentAssignment->id)
+                    ->where('payment_type', 'membership_fee')
+                    ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$currentMonth])
+                    ->sum('amount');
+
+                if ($totalPaidThisMonth >= $currentFee) {
+                    $fullMessage = "The full fee for this month has already been paid. Please wait for the next month to record a new payment.";
+                    $allowPayment = false;
+                } elseif ($totalPaidThisMonth > 0) {
+                    $remainingDueThisMonth = $currentFee - $totalPaidThisMonth;
+                    $partialMessage = "This member has already paid a partial amount of " . number_format($totalPaidThisMonth, 2) . " PKR. The remaining amount for this month's fee is " . number_format($remainingDueThisMonth, 2) . " PKR.";
+                }
+
+                $remainingDueThisMonth = $currentFee - $totalPaidThisMonth;
+                if ($remainingDueThisMonth < 0) {
+                    $remainingDueThisMonth = 0;
+                }
+
+                $totalPayable = $currentDues + $remainingDueThisMonth;
             }
         }
         
-        return view('payments.create', compact('members', 'selectedMember', 'currentAssignment', 'currentDues', 'currentFee', 'totalPayable'));
+        return view('payments.create', compact('members', 'selectedMember', 'currentAssignment', 'currentDues', 'currentFee', 'totalPayable', 'partialMessage', 'fullMessage', 'allowPayment'));
     }
 
     /**
@@ -197,14 +220,27 @@ class PaymentController extends Controller
         $paymentDate = Carbon::parse($validated['payment_date']);
         $paymentMonth = $paymentDate->format('Y-m');
 
-        // Always check for duplicate payments in the same calendar month for membership fees (check across all assignments for the member)
-        $existingPayment = Payment::where('member_id', $member->id)
+        // Check if fees for this month have already been paid in full
+        $existingFullPayment = Payment::where('member_id', $member->id)
             ->where('payment_type', 'membership_fee')
             ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$paymentMonth])
+            ->where('status', 'paid')
             ->first();
         
-        if ($existingPayment) {
-            return back()->withErrors(['duplicate' => 'A payment has already been recorded for ' . $paymentDate->format('F Y') . '. Multiple payments for the same month are not allowed.'])->withInput();
+        if ($existingFullPayment) {
+            return back()->withErrors(['duplicate' => 'Fees for this month have already been paid in full.'])->withInput();
+        }
+
+        // Calculate total paid this month for this assignment
+        $totalPaidThisMonth = Payment::where('member_membership_plan_id', $assignment->id)
+            ->where('payment_type', 'membership_fee')
+            ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$paymentMonth])
+            ->sum('amount');
+
+        $remainingDue = $planFee - $totalPaidThisMonth;
+
+        if ($amount > $remainingDue) {
+            return back()->withErrors(['amount' => 'You cannot record a payment greater than the remaining amount or total due.'])->withInput();
         }
 
         // Additional check for yearly plans: ensure total payments don't exceed yearly fee
@@ -222,11 +258,12 @@ class PaymentController extends Controller
             }
         }
 
-        // Calculate previous dues: sum of due_amount from all previous payments for this assignment
+        // Calculate previous dues: sum of due_amount from payments in previous months for this assignment
         $previousDues = Payment::where('member_membership_plan_id', $assignment->id)
             ->where('payment_type', 'membership_fee')
             ->where('due_amount', '>', 0)
             ->where('payment_date', '<', $paymentDate->toDateString())
+            ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') != ?", [$paymentMonth])
             ->sum('due_amount');
 
         $totalDue = $previousDues + $planFee;
@@ -238,14 +275,15 @@ class PaymentController extends Controller
         $paidCurrent = min($remaining, $planFee);
         $remaining -= $paidCurrent;
 
-        $dueAmount = $planFee - $paidCurrent;
+        // Calculate the new due amount for the current month
+        $newDueAmount = $planFee - ($totalPaidThisMonth + $amount);
 
-        if ($dueAmount <= 0) {
+        if ($newDueAmount <= 0) {
             $validated['status'] = 'paid';
             $validated['due_amount'] = 0;
         } else {
             $validated['status'] = 'partial';
-            $validated['due_amount'] = $dueAmount;
+            $validated['due_amount'] = $newDueAmount;
         }
 
         // Set due_date to end of current month if not set
@@ -254,6 +292,15 @@ class PaymentController extends Controller
         }
 
         $payment = Payment::create($validated);
+
+        // If the payment completed the current month's fee for this assignment, update all partial payments in the month for the member to paid
+        if ($newDueAmount <= 0) {
+            Payment::where('member_id', $member->id)
+                ->where('payment_type', 'membership_fee')
+                ->whereRaw("DATE_FORMAT(payment_date, '%Y-%m') = ?", [$paymentMonth])
+                ->where('status', 'partial')
+                ->update(['status' => 'paid', 'due_amount' => 0]);
+        }
 
         // Clear previous dues if any were cleared
         if ($clearedDues > 0) {
@@ -269,6 +316,9 @@ class PaymentController extends Controller
                 if ($remainingToClear <= 0) break;
                 $clearAmount = min($remainingToClear, (float) $prevPayment->due_amount);
                 $prevPayment->due_amount = $prevPayment->due_amount - $clearAmount;
+                if ($prevPayment->due_amount <= 0) {
+                    $prevPayment->status = 'paid';
+                }
                 $prevPayment->save();
                 $remainingToClear -= $clearAmount;
             }
@@ -341,7 +391,7 @@ class PaymentController extends Controller
             }
         }
         
-        return redirect()->route('payments.index')->with('success', 'Payment recorded successfully!');
+        return redirect()->route('members.index')->with('success', 'Payment recorded successfully! Member status updated.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withErrors(['error' => 'Failed to record payment: ' . $e->getMessage()])->withInput();
